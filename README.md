@@ -8,9 +8,8 @@ Fully configurable for any location via ZIP code or the ⌖ Locate button. Defau
 
 ## Quick Start
 
-1. Open `astronomy_dashboard.html` in Chrome, Firefox, or Safari
-2. Optionally enter your ZIP code in Settings (gear icon) to set your location
-3. Use the four tabs to explore the year, plan a specific night, or check Jupiter and Saturn
+1. Enter your ZIP code in Settings (gear icon) or click the location button to set your location
+2. Use the four tabs to explore the year, plan a specific night, or check Jupiter and Saturn
 
 ---
 
