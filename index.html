@@ -1611,7 +1611,7 @@ function openDetail(id){
   document.getElementById('detailContent').innerHTML=html;
   document.getElementById('detailPanel').classList.add('open');
 }
-function closeDetail() { $('detailPanel').classList.remove('open'); }
+function closeDetail() { document.getElementById('detailPanel').classList.remove('open'); }
 function gotoNight() { closeDetail(); switchTab('night'); }
 
 // ── OPTIONS ───────────────────────────────────────────────────────────────────
@@ -1621,8 +1621,8 @@ function openOpts(){
   document.getElementById('optsOverlay').classList.add('open');
 }
 function closeOpts(e) {
-  if (!e || e.target === $('optsOverlay')) {
-    $('optsOverlay').classList.remove('open');
+  if (!e || e.target === document.getElementById('optsOverlay')) {
+    document.getElementById('optsOverlay').classList.remove('open');
     renderYear();
   }
 }
