@@ -8,8 +8,11 @@ Fully configurable for any location via ZIP code or the ⌖ Locate button. Defau
 
 ## Quick Start
 
-1. Enter your ZIP code in Settings (gear icon) or click the location button to set your location
-2. Use the four tabs to explore the year, plan a specific night, or check Jupiter and Saturn
+1. Open `index.html` in Chrome, Firefox, or Safari
+2. Optionally enter your ZIP code in Settings and click Apply, or click **⌖ Locate** to use your browser's geolocation
+3. Use the five tabs to explore the year, plan a specific night, or check Jupiter, Saturn, and deep sky objects
+
+Your location is saved in the URL hash (e.g. `#94102` or `#37.77,-122.41`) so it persists across reloads and can be bookmarked or shared.
 
 ---
 
@@ -17,12 +20,12 @@ Fully configurable for any location via ZIP code or the ⌖ Locate button. Defau
 
 ### Year View
 
-An annual Gantt-style timeline showing every tracked object's visibility across the full calendar year. The horizontal axis is the year; each row is one object. Bars represent nights when the object rises above your effective horizon during your observing window.
+An annual Gantt-style timeline showing every tracked object's visibility across the full calendar year. Each row is one object; bars represent nights when the object rises above your effective horizon during your observing window.
 
 **Bar encoding:**
 - Bar length = observable season
 - Bar opacity = peak altitude quality (brighter = higher culmination)
-- Colored dot = object color
+- Phase/illumination dot on Moon and inner planet bars
 
 **Overlaid event markers** (each toggleable via checkboxes):
 
@@ -39,9 +42,9 @@ An annual Gantt-style timeline showing every tracked object's visibility across 
 | ⊙ | Lunar occultation of a planet |
 
 **Interactions:**
-- Hover any bar for altitude, rise/set times, phase/illumination (where applicable)
+- Hover any bar for altitude, rise/set times, phase/illumination
 - Right-click any event marker to jump to that date in Single Night view
-- Click any object label to open the detail panel
+- Click any object label to open the detail panel (shows magnitude, position, rise/set times)
 - Use `‹ Year ›` arrows to navigate years
 
 ---
@@ -51,10 +54,16 @@ An annual Gantt-style timeline showing every tracked object's visibility across 
 An altitude-vs-time chart for any chosen date, covering dusk through dawn. Each tracked object gets a curve showing its altitude through the night.
 
 **Visual encoding:**
-- Solid line = above your effective horizon limit
-- Dashed line = below limit (still plotted for context)
-- Line weight: Moon 4px, planets 2.5px
-- Colors match the Year View
+
+| Object | Line style |
+|--------|-----------|
+| Moon | Solid, 4px |
+| Planets | Solid, 2.5px |
+| Deep sky objects | Dashed, 1.5px, type color |
+
+- Solid line = above effective horizon
+- Dashed ghost = below limit (plotted for context)
+- Colors match the Year View and Deep Sky tab type colors
 
 **Jupiter overlay** (when Jupiter is visible):
 - **Orange stripe** on Jupiter's curve = Great Red Spot within ±35° of central meridian
@@ -64,38 +73,30 @@ An altitude-vs-time chart for any chosen date, covering dusk through dawn. Each 
 - Bracket markers with separation label when two objects are within 5° of each other
 
 **Interactions:**
-- Hover anywhere on the canvas for a tooltip showing time, altitude, azimuth, and phase
-- The date picker accepts any date; click Update to redraw
+- Hover anywhere on the canvas for a tooltip: time, altitude, azimuth, phase/distance for planets and Moon; description for DSOs
+- Date picker accepts any date
 
 ---
 
 ### Jupiter Tab
 
-A monthly event timeline for the Galilean moon system. Designed to identify high-value observing nights — specifically shadow transits, the Great Red Spot, and rare simultaneous events.
+A monthly event timeline for the Galilean moon system, designed to identify high-value observing nights.
 
-**Event rows:**
-- **Io, Europa, Ganymede, Callisto** — horizontal bars for shadow transits and moon transits
-- **GRS** — orange bars when the Great Red Spot is within ±35° of the central meridian (System II longitude)
+**Event rows:** Io, Europa, Ganymede, Callisto (shadow transits and disk transits), plus GRS (Great Red Spot).
 
 **Visual hierarchy:**
 - Shadow transits: full-height silver/white bars (highest priority)
-- Moon transits: shorter, dimmer bars (secondary)
-- GRS: orange bars
+- Moon transits: shorter, dimmer bars
+- GRS: orange bars when within ±35° of central meridian
 - Rare overlaps (double shadow, shadow + GRS): pulsing gold highlight
 
-**Best Nights chips** — scored and ranked:
-- Shadow in observing window: +3 pts
-- GRS in window: +2 pts
-- Rare overlap: +4 pts
-- Top 8 nights shown; click any chip to jump to Single Night view
+**Best Nights chips** — scored and ranked by shadow transit (+3), GRS (+2), rare overlap (+4). Top 8 shown; click any chip to jump to Single Night.
 
-**Column date alignment:**
-- All bars display under their **local evening date** (not UT date). Events occurring in the early morning UT hours (e.g., 02:00 UT on the 23rd = 7pm PDT on the 22nd) correctly appear under the local date column.
+**Column date alignment:** All bars display under their **local evening date** (not UT date). Events in the early morning UT hours correctly appear under the previous local date.
 
-**Navigation:**
-- `‹ Month Year ›` arrows step through months
-- Right-click any event bar to jump to that night in Single Night view
-- GRS longitude field is adjustable (default 295°, System II; drifts ~1°/month)
+**Callisto transit gap note:** When Callisto transits are geometrically impossible (B₀ too large), an info banner explains why and gives the next expected window.
+
+**Navigation:** `‹ Month Year ›` arrows, right-click any bar to jump to Single Night, GRS longitude field (default 295°, System II).
 
 ---
 
@@ -103,35 +104,66 @@ A monthly event timeline for the Galilean moon system. Designed to identify high
 
 An annual context panel answering: *"Is Saturn worth observing right now, and what makes it interesting?"*
 
-**Left panel — current context:**
-- **SVG ring diagram** — dynamically drawn at the current ring tilt angle; thicker = more open
-- **Quality rating** — Excellent / Very Good / Good / Fair / Poor, based on ring tilt B
-- **Ring tilt (B)** — sub-Earth latitude in degrees. 0° = edge-on (rings invisible), 27° = maximum
-- **Trend** — whether rings are opening or closing over the next 30 days
-- **Elongation** — current angular separation from the Sun
-- **Distance** — Earth-Saturn distance in AU
-- **Opposition date** — next or most recent opposition for the selected year
+**Left panel:**
+- **SVG ring diagram** — drawn at the current ring tilt; thicker ellipse = more open
+- **Quality rating** — Excellent / Very Good / Good / Fair / Poor (based on ring tilt B)
+- **Ring tilt (B)** — 0° = edge-on, 27° = maximum
+- **Trend** — rings opening or closing over the next 30 days
+- **Elongation, distance, opposition date**
 
-Hover any stat row for a tooltip explaining what the value means and its observational implications.
+Hover any stat row for a tooltip explaining the value.
 
 **Right panel — annual timeline (three rows):**
 
-| Row | What it shows |
-|-----|--------------|
-| Ring tilt | Band height proportional to \|B\|. Thin = edge-on, thick = wide open. Shaded region = observable |
-| Visibility | Bar brightness proportional to elongation. Dark = near conjunction, bright = near opposition |
-| Ring shadow | Blue highlight when shadow geometry is favorable (elongation 55–125°, B > 2°) |
+| Row | Encoding |
+|-----|---------|
+| Ring tilt | Band height ∝ \|B\|. Thin = edge-on, thick = wide open |
+| Visibility | Bar brightness ∝ elongation |
+| Ring shadow | Blue window when shadow geometry is favorable (elong 55–125°, B > 2°) |
 
-Vertical markers: opposition (orange), quadratures (blue), today (gold).
+Hover any track for a date-interpolated tooltip with ring tilt, elongation, distance, and shadow quality.
 
-Hover any track for a date-interpolated tooltip showing ring tilt, elongation, distance, and shadow quality at that point.
+**Notable Events callouts:** opposition date, quadrature shadow note, Titan transit status (context-aware by year — last window closed early 2026, next ~2038–2040).
 
-**Notable Events callouts:**
-- Opposition date and ring tilt at that moment
-- Quadrature window and shadow arc visibility note
-- Titan transit status (context-aware by year — see Titan note below)
+**Year navigation:** `‹ Year ›` arrows, shared with Year View.
 
-**Year navigation:** `‹ Year ›` arrows; shares the `ST.year` state with Year View.
+---
+
+### Deep Sky Tab
+
+An annual visibility timeline for 15 common deep sky objects, with Bortle sky condition context.
+
+**Objects included:**
+
+| Type | Objects |
+|------|---------|
+| Open cluster (blue) | Pleiades M45, Beehive M44, Wild Duck M11, Double Cluster NGC 869/884, M35 |
+| Globular cluster (gold) | Hercules M13, M3 |
+| Emission nebula (pink) | Orion Nebula M42, Lagoon Nebula M8, Crab Nebula M1 |
+| Planetary nebula (teal) | Ring Nebula M57, Dumbbell Nebula M27 |
+| Galaxy (purple) | Andromeda M31, Bode's Galaxy M81, Cigar Galaxy M82 |
+
+**Timeline:** Each row shows a visibility bar whose height encodes peak altitude through the night (taller = object higher in sky = more favorable). Grouped by observing season: Autumn/Winter, Spring, Summer/Autumn.
+
+**Hover any track:** Shows the date at cursor, peak altitude, and the full three-tier Bortle context (Urban/Suburban 7–9, Suburban/Rural 4–6, Dark Skies 1–3) from the reference table.
+
+**Click any object label:** Opens the detail panel with the SVG diagram, magnitude with telescope requirement hint, coordinates, and Bortle notes.
+
+**Year navigation:** `‹ Year ›` arrows.
+
+---
+
+## Object Details Panel
+
+Click any object label in Year View or Deep Sky tab to open the detail panel.
+
+**Planets:** Magnitude range, current RA/Dec, distance, altitude/azimuth now, today's rise/transit/set times.
+
+**Moon:** Phase name and icon, illumination %, distance, altitude now, today's rise/transit/set.
+
+**Deep sky objects:** Catalog magnitude with telescope requirement hint (e.g. "Binoculars or small telescope"), description, RA/Dec, altitude now, today's rise/transit/set.
+
+All panels include a **View Tonight's Chart** button that jumps to the Single Night tab for the current date.
 
 ---
 
@@ -139,93 +171,83 @@ Hover any track for a date-interpolated tooltip showing ring tilt, elongation, d
 
 ### Coordinate System
 
-All positions computed in the J2000.0 ecliptic frame and converted to geocentric equatorial (RA/Dec) for alt-az projection. The observer's local sidereal time drives the hour angle used in the alt-az transformation.
+All positions computed in the J2000.0 ecliptic frame and converted to geocentric equatorial (RA/Dec) for alt-az projection. Observer's local sidereal time drives the hour angle.
 
 ### Core Ephemerides
 
-**Sun** — Meeus *Astronomical Algorithms* Ch.25. Mean longitude + equation of center (3 terms). Accurate to ~0.01°.
+**Sun** — Meeus Ch.25. Mean longitude + equation of center (3 terms). ~0.01° accuracy.
 
-**Moon** — Meeus Ch.47 simplified series. Longitude (60 terms), latitude (5 terms), distance. Accurate to ~0.1° for planning purposes.
+**Moon** — Meeus Ch.47 simplified series. Longitude (60 terms), latitude (5 terms), distance. ~0.1° accuracy.
 
-**Planets** — Meeus Table 31.a orbital elements (L, e, i, Ω, ω) with secular rates. Full Keplerian orbit solution via iterative Kepler equation. Converted to geocentric equatorial via heliocentric rectangular → geocentric rectangular → equatorial rotation.
+**Planets** — Meeus Table 31.a orbital elements with secular rates. Full Keplerian orbit via iterative Kepler equation. Geocentric RA/Dec via heliocentric → geocentric rectangular → equatorial rotation.
 
-> **Critical fix applied:** The argument of latitude `u = v + ω − Ω` must be computed entirely in radians. An earlier version mixed radians (true anomaly v) with degrees (ω, Ω), producing ~90° errors in planet RA and corrupting elongation and shadow phase calculations for all months.
+> **Note:** The argument of latitude `u = v + ω − Ω` must be computed entirely in radians. An earlier version mixed radians and degrees here, producing ~90° errors in planet RA.
 
-**Rise/set/transit** — Meeus Ch.15 iterative method. Converges to within ~1 minute for all objects.
+**Rise/set/transit** — Meeus Ch.15 iterative method. Converges to within ~1 minute.
 
 ### Jupiter — Galilean Moon System
 
-**Algorithm:** Meeus Ch.44 simplified series. Each moon's mean longitude is perturbed by mutual interaction terms (largest: Io/Europa resonance).
+**Algorithm:** Meeus Ch.44 simplified series with mutual interaction perturbations.
 
 **Sky-plane projection:**
 ```
-x =  -a · sin(λ)                    [east-west, + = west]
-y =   a · cos(λ) · sin(B₀)          [north-south]
-z =   a · cos(λ) · cos(B₀)          [depth; z < 0 = in front of Jupiter]
+x = -a · sin(λ)                  [east-west, + = west]
+y =  a · cos(λ) · sin(B₀)        [north-south]
+z =  a · cos(λ) · cos(B₀)        [depth; z < 0 = in front of Jupiter]
 ```
 
-where B₀ is Jupiter's sub-Earth latitude (replaces the previous fixed DE = 3.1°, which made Callisto transits geometrically impossible when |B₀| was small).
-
-**Sub-Earth latitude B₀** — computed from Jupiter's heliocentric ecliptic longitude and the node/obliquity of Jupiter's equatorial plane:
+**Sub-Earth latitude B₀** — computed dynamically from Jupiter's heliocentric ecliptic longitude (replaces old fixed DE = 3.1°, which made Callisto transits geometrically undetectable):
 ```
 B₀ = arcsin(−sin(3.117°) · sin(λ_J − 99.44°))
 ```
 
-**Transit detection:** `z < 0` AND `x² + (y/0.935)² < 1` (disk ellipse: equatorial radius 1 Rj, polar 0.935 Rj)
+**Transit detection:** `z < 0` AND `x² + (y/0.935)² < 1`
 
 **Shadow displacement:**
 ```
 shadow_x = moon_x + shadowPhase · a
-shadowPhase = ±sin(phase_angle_at_Jupiter)
+shadowPhase = ±sin(phase_angle_at_Jupiter)   [negative post-opposition]
 ```
-Negative post-opposition (shadow trails east of moon). Phase angle derived from Jupiter's geocentric elongation and heliocentric distance.
 
-**Great Red Spot** — System II central meridian longitude via:
-```
-CM_II = 181.62° + 870.5366° · (JD − 2443000.5)
-```
-GRS visible when |CM_II − GRS_longitude| < 35°. Default GRS longitude 295° (System II, 2026); adjustable in the UI.
+**GRS:** System II central meridian via `CM_II = 181.62° + 870.5366° · (JD − TITAN_EPOCH)`
 
-**Calibrated orbital elements** (empirically matched to *Sky & Telescope* predictions, Apr–May 2026):
+**Calibrated orbital elements** (matched to Sky & Telescope, Apr–May 2026):
 
-| Moon | l₀ (°) | n (°/day) | Transit accuracy |
-|------|--------|-----------|-----------------|
+| Moon | l₀ (°) | n (°/day) | Accuracy |
+|------|--------|-----------|---------|
 | Io | 355.50 | 203.48895579 | ±6 min |
 | Europa | 64.80 | 101.37472473 | ±18 min |
 | Ganymede | 64.716 | 50.17586719 | ±30 min |
 | Callisto | 289.963 | 21.43479135 | ±20 min |
 
-Ganymede and Callisto were calibrated from two transit midpoints each (Apr 10 and May 23 for Ganymede; Apr 20 and May 7 for Callisto), giving consistent period and initial longitude simultaneously.
+**Callisto transit window:** Requires |B₀| < 2.03° (= arcsin(1/26.36 Rj)). Last window closed ~Jan 2027; next opens ~late 2030.
 
 ### Saturn — Ring System
 
-**Ring tilt B** — sub-Earth latitude on Saturn, computed from geocentric ecliptic longitude and latitude of Saturn and Saturn's pole orientation (Meeus Ch.45):
+**Ring tilt B** — Meeus Ch.45:
 ```
 B = arcsin(−sin(28.048°) · cos(β) · sin(λ − 169.53°) + cos(28.048°) · sin(β))
 ```
-where λ, β are Saturn's geocentric ecliptic longitude and latitude.
 
-**Titan transits** — geometrically possible only when |B| < 2.83° (= arcsin(1/20.27), Titan's orbital radius in Saturn radii). The last transit window was mid-2024 through early February 2026. The next window opens around 2038–2040.
+**Titan transits** — possible only when |B| < 2.83° (= arcsin(1/20.27 Rs)). Last window: mid-2024 through early Feb 2026. Next: ~2038–2040.
 
 ### Eclipses and Occultations
 
-**Lunar eclipses** — detected by checking Moon–antisun angular separation at full moon. Umbral magnitude from shadow geometry. Penumbral eclipses (umbral magnitude < 0) are noted separately.
+**Lunar eclipses** — Moon–antisun separation at full moon; umbral magnitude from shadow geometry.
 
-**Solar eclipses** — detected at new moon by checking Moon-Sun angular separation against the sum of apparent radii. Coverage percentage computed for the observer's location.
+**Solar eclipses** — Moon–Sun separation at new moon vs sum of apparent radii; coverage % for observer's location.
 
-**Planetary occultations** — Moon-planet angular separation at new/full moon phases checked against the Moon's apparent radius.
+**Planetary occultations** — Moon-planet separation at new/full moon vs Moon's apparent radius.
 
 ### Conjunctions
 
-Scanned at 12-hour intervals throughout the year for all pairs of tracked objects. Tiered by separation:
+Scanned at 12-hour intervals for all pairs of tracked objects. Daytime conjunctions filtered out.
 
 | Tier | Threshold | Display |
 |------|-----------|---------|
 | Close | < 1.5° | Gold ⟡ |
 | Moderate | < 5° | White ⟡ |
 | Wide | < 10° | Blue ⟡ |
-
-Daytime conjunctions (both objects below horizon during night hours) are filtered out.
 
 ---
 
@@ -234,9 +256,12 @@ Daytime conjunctions (both objects below horizon during night hours) are filtere
 | Setting | Default | Notes |
 |---------|---------|-------|
 | ZIP code | 94102 (San Francisco CA) | Looks up lat/lon from built-in table |
-| East horizon limit | 5° | Objects below this altitude at eastern azimuths are suppressed |
-| West horizon limit | 5° | Same for western azimuths |
+| ⌖ Locate | — | Uses browser Geolocation API (requires permission) |
+| East horizon | 5° | Objects below this altitude at eastern azimuths are suppressed |
+| West horizon | 5° | Same for western azimuths |
 | Late night cutoff | 1:00 AM | Observing window ends at this local time |
+
+**URL hash persistence:** After applying a ZIP or using Locate, the location is saved to the URL hash (`#94102` or `#37.77,-122.41`). Reloading the page restores the location automatically. The hash can be bookmarked or shared.
 
 **Supported ZIP codes (built-in):**
 94102 San Francisco CA · 95630 Folsom CA · 95621 Citrus Heights CA · 95814 Sacramento CA · 90210 Beverly Hills CA · 92101 San Diego CA · 91101 Pasadena CA · 96001 Redding CA · 89101 Las Vegas NV · 97201 Portland OR · 98101 Seattle WA
@@ -248,42 +273,52 @@ Daytime conjunctions (both objects below horizon during night hours) are filtere
 **Solar system:** Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune
 
 **Deep sky (optional, disabled by default):**
-Pleiades M45, Orion Nebula M42, Andromeda Galaxy M31, Hercules Cluster M13, Beehive M44, Crab Nebula M1, M35 Gemini, Lagoon Nebula M8
+
+| Type | Objects |
+|------|---------|
+| Open clusters | Pleiades M45, Beehive M44, Wild Duck M11, Double Cluster, M35 |
+| Globular clusters | Hercules M13, M3 |
+| Emission nebulae | Orion Nebula M42, Lagoon Nebula M8, Crab Nebula M1 |
+| Planetary nebulae | Ring Nebula M57, Dumbbell Nebula M27 |
+| Galaxies | Andromeda M31, Bode's Galaxy M81, Cigar Galaxy M82 |
+
+Enable DSOs via the ⚙ Objects panel. Enabled DSOs appear as **dashed colored curves** in Single Night view alongside planets, with type-matched colors.
 
 ---
 
 ## Code Structure
 
-The entire application is ~2,400 lines of vanilla HTML/CSS/JavaScript in a single file. No build step, no framework, no external dependencies.
+Single file, ~3,150 lines of vanilla HTML/CSS/JavaScript. No build step, no framework, no external dependencies.
 
 ```
-astronomy_dashboard.html
+index.html
 │
 ├── <style>          CSS variables, layout, tab system, component styles
 │
 └── <script>
-    ├── DOM CACHE    Cached element references ($tooltip, $nightDate, $nightCanvas)
-    ├── CONSTANTS    J2000, JD_UNIX, TITAN_EPOCH
-    ├── CORE MATH    JD conversion, date formatting, time helpers
+    ├── DOM CACHE    $tooltip, $nightDate, $nightCanvas
+    ├── CONSTANTS    J2000, JD_UNIX, TITAN_EPOCH, DEG, RAD
+    ├── CORE MATH    JD conversion, time formatting, local noon
     ├── ASTRONOMY    Sun, Moon, planets, alt/az, rise/set/transit
-    ├── OBJECTS & STATE  Tracked objects, observer settings (ST), ZIP lookup
-    ├── YEAR VIEW    Annual timeline rendering, visibility bar computation
-    ├── CONJUNCTIONS Separation scanning, tier classification, marker injection
+    ├── OBJECTS & STATE  DSO array (15 objects), OBJECTS, ST, ZIP_DB
+    ├── YEAR VIEW    Annual timeline, visibility bars, event markers
+    ├── CONJUNCTIONS Separation scanning, tier classification
     ├── ECLIPSES     Lunar/solar eclipse detection, occultation scanning
-    ├── PLANET EVENTS Opposition, quadrature, elongation marker computation
-    ├── NIGHT VIEW   Canvas altitude curves, Jupiter overlays, annotations
-    ├── UI HELPERS   Tooltips, detail panel, options, tab switching
-    ├── JUPITER TAB  Monthly Galilean moon shadow/transit timeline + scoring
-    └── SATURN TAB   Annual ring context, shadow geometry, hover tooltips
+    ├── PLANET EVENTS Opposition, quadrature, elongation markers
+    ├── NIGHT VIEW   Canvas altitude curves, DSO dashed lines, Jupiter overlays
+    ├── UI HELPERS   Tooltips, detail panel (with magnitude), tabs, settings
+    ├── JUPITER TAB  Galilean moon timeline, nightWindow(), scoring
+    ├── SATURN TAB   Ring tilt context, shadow geometry, Titan note
+    └── DEEP SKY TAB DSO_CATALOG (13 entries), dsoSVG(), Bortle tooltips
 ```
 
 **Key constants:**
 ```javascript
-const J2000      = 2451545.0;  // JD of J2000.0 epoch
-const JD_UNIX    = 2440587.5;  // JD of Unix epoch
-const TITAN_EPOCH = 2443000.5; // Reference epoch for Galilean moon elements
-const DEG = Math.PI / 180;     // degrees → radians
-const RAD = 180 / Math.PI;     // radians → degrees
+const J2000       = 2451545.0;  // JD of J2000.0 epoch
+const JD_UNIX     = 2440587.5;  // JD of Unix epoch
+const TITAN_EPOCH = 2443000.5;  // Reference epoch for Galilean moon elements
+const DEG = Math.PI / 180;      // degrees → radians
+const RAD = 180 / Math.PI;      // radians → degrees
 ```
 
 ---
@@ -291,13 +326,13 @@ const RAD = 180 / Math.PI;     // radians → degrees
 ## Limitations and Known Accuracy
 
 - **Planetary positions:** ~0.1° (sufficient for naked-eye and telescope planning)
-- **Conjunction timing:** ±12 hours (12-hour scan step + hourly refinement)
-- **Eclipse detection:** umbral magnitude within ~5%; type (total/partial/penumbral) correct
+- **Conjunction timing:** ±12 hours
+- **Eclipse detection:** umbral magnitude within ~5%; type correct
 - **Galilean moon transits:** see calibration table above
 - **Saturn ring tilt:** ~0.1° accuracy
-- **No light-time correction** — positions are geometric, not apparent
-- **No atmospheric refraction** — altitudes are geometric; add ~0.5° near horizon
-- **No precession beyond J2000** — adequate for ±10 year range around 2026
+- **No light-time correction** — geometric positions only
+- **No atmospheric refraction** — add ~0.5° near horizon
+- **No precession beyond J2000** — adequate for ±10 years around 2026
 
 ---
 
@@ -306,3 +341,5 @@ const RAD = 180 / Math.PI;     // radians → degrees
 Meeus, J. *Astronomical Algorithms*, 2nd ed. Willmann-Bell, 1998.
 
 Calibration data: *Sky & Telescope* planet and satellite event tables, April–May 2026.
+
+DSO descriptions and Bortle context adapted from standard amateur astronomy references.

@@ -156,6 +156,25 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .readme-close:hover{color:var(--text);background:var(--bg4)}
 .btn-readme{font-size:12px;padding:4px 10px;font-family:var(--mono);opacity:0.8}
 .btn-readme:hover{opacity:1}
+
+/* ── DEEP SKY TAB ─────────────────────────────────────────────────────────── */
+.dso-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.dso-grid{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.dso-row{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--border);min-height:52px}
+.dso-row:last-child{border-bottom:none}
+.dso-row:hover{background:rgba(200,168,80,0.04)}
+.dso-info{display:flex;align-items:center;gap:10px;padding:6px 10px;border-right:1px solid var(--border);cursor:pointer}
+.dso-diagram{flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.dso-meta{flex:1;min-width:0}
+.dso-name{font-size:12px;font-weight:700;font-family:var(--mono);color:var(--text);white-space:nowrap}
+.dso-common{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+.dso-attrs{font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:2px;display:flex;gap:6px}
+.dso-type-badge{font-size:8px;font-family:var(--mono);padding:1px 4px;border-radius:2px;white-space:nowrap}
+.dso-track{position:relative;overflow:hidden;height:52px;cursor:crosshair}
+.dso-tl-header{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--border);background:var(--bg3);height:22px}
+.dso-month-labels{position:relative;height:22px}
+.dso-section-label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);padding:2px 10px 2px 10px;display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--bg3);grid-column:1/-1}
+.dso-bortle-legend{display:flex;gap:16px;align-items:center;font-size:10px;font-family:var(--mono);color:var(--text3);flex-wrap:wrap;padding:6px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)}
 </style>
 </head>
 <body>
@@ -177,6 +196,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
   <div class="tab" id="tab-night" onclick="switchTab('night')">Single Night</div>
   <div class="tab" id="tab-jupiter" onclick="switchTab('jupiter')">Jupiter</div>
   <div class="tab" id="tab-saturn" onclick="switchTab('saturn')">Saturn</div>
+  <div class="tab" id="tab-dso" onclick="switchTab('dso')">Deep Sky</div>
 </div>
 <div class="content active" id="content-year">
   <div class="year-controls">
@@ -260,6 +280,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
   <div class="chart-area"><canvas id="nightCanvas" height="420"></canvas></div>
   <div class="night-legend" id="nightLegend"></div>
 </div>
+<div class="content" id="content-dso">
+  <div id="dsoTabContent"></div>
+</div>
+
 <div class="content" id="content-saturn">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
     <div class="year-nav">
@@ -336,7 +360,7 @@ function jdOfDate(dt){
   return jdn(dt.getUTCFullYear(),dt.getUTCMonth()+1,dt.getUTCDate())
     +dt.getUTCHours()/24+dt.getUTCMinutes()/1440;
 }
-// Local solar noon JD. jdMid = jdn(y,m,d) = 0h UT. Noon UT = jdMid+0.5. Local noon offset = -lon/360 days (west lon negative → +offset).
+// Local solar noon JD. jdMid = jdn(y,m,d) = 0h UT. Noon UT = jdMid+0.5. Local noon offset = -lon/360 days (west lon negative = +offset).
 function jdLocalNoon(jdMid,lon){return jdMid+0.5-lon/360;}
 
 // JD → JS Date (UTC)
@@ -475,14 +499,27 @@ const OBJECTS=[
   {id:'neptune', name:'Neptune', color:'#6080d8',type:'planet', enabled:true},
 ];
 const DSO=[
-  {id:'pleiades',name:'Pleiades M45',  ra:56.75, dec:24.12,  desc:'Open cluster, Taurus',  enabled:false},
-  {id:'orion',   name:'Orion Neb M42', ra:83.82, dec:-5.39,  desc:'Emission nebula',        enabled:false},
-  {id:'m31',     name:'Andromeda M31', ra:10.68, dec:41.27,  desc:'Nearest large galaxy',   enabled:false},
-  {id:'m13',     name:'Hercules M13',  ra:250.42,dec:36.46,  desc:'Globular cluster',        enabled:false},
-  {id:'beehive', name:'Beehive M44',   ra:130.05,dec:19.98,  desc:'Open cluster, Cancer',  enabled:false},
-  {id:'m1',      name:'Crab Neb M1',   ra:83.63, dec:22.01,  desc:'Supernova remnant',      enabled:false},
-  {id:'m35',     name:'M35 Gemini',    ra:92.27, dec:24.34,  desc:'Open cluster',            enabled:false},
-  {id:'m8',      name:'Lagoon Neb M8', ra:270.92,dec:-24.38, desc:'Emission nebula, Sgr',   enabled:false},
+  // Open clusters — steel blue
+  {id:'pleiades', name:'Pleiades M45',     ra:56.75,  dec:24.12,  color:'#8db4e0', mag:1.6,  desc:'Open cluster, Taurus',     enabled:false},
+  {id:'beehive',  name:'Beehive M44',      ra:130.05, dec:19.98,  color:'#8db4e0', mag:3.1,  desc:'Open cluster, Cancer',     enabled:false},
+  {id:'m11',      name:'Wild Duck M11',    ra:282.77, dec:-6.27,  color:'#8db4e0', mag:5.8,  desc:'Open cluster, Scutum',     enabled:false},
+  {id:'ngc869',   name:'Double Cluster',   ra:34.73,  dec:57.13,  color:'#8db4e0', mag:4.3,  desc:'Open clusters, Perseus',   enabled:false},
+  {id:'m35',      name:'M35 Gemini',       ra:92.27,  dec:24.34,  color:'#8db4e0', mag:5.1,  desc:'Open cluster, Gemini',     enabled:false},
+  // Globular clusters — gold
+  {id:'m13',      name:'Hercules M13',     ra:250.42, dec:36.46,  color:'#e0c87a', mag:5.8,  desc:'Globular cluster',         enabled:false},
+  {id:'m3',       name:'M3 Canes Venatici',ra:205.55, dec:28.38,  color:'#e0c87a', mag:6.2,  desc:'Globular cluster',         enabled:false},
+  // Emission nebulae — pink
+  {id:'orion',    name:'Orion Neb M42',    ra:83.82,  dec:-5.39,  color:'#e07a9a', mag:4.0,  desc:'Emission nebula, Orion',   enabled:false},
+  {id:'m8',       name:'Lagoon Neb M8',    ra:270.92, dec:-24.38, color:'#e07a9a', mag:5.8,  desc:'Emission nebula, Sgr',     enabled:false},
+  // Planetary nebulae — teal
+  {id:'m57',      name:'Ring Neb M57',     ra:283.40, dec:33.03,  color:'#7ae0c8', mag:8.8,  desc:'Planetary nebula, Lyra',   enabled:false},
+  {id:'m27',      name:'Dumbbell M27',     ra:299.90, dec:22.72,  color:'#7ae0c8', mag:7.5,  desc:'Planetary nebula, Vulpecula',enabled:false},
+  // Galaxies — purple
+  {id:'m31',      name:'Andromeda M31',    ra:10.68,  dec:41.27,  color:'#b07ae0', mag:3.4,  desc:'Galaxy, Andromeda',        enabled:false},
+  {id:'m81',      name:"Bode's Gal M81",   ra:148.89, dec:69.07,  color:'#b07ae0', mag:6.9,  desc:'Galaxy, Ursa Major',       enabled:false},
+  {id:'m82',      name:'Cigar Gal M82',    ra:148.97, dec:69.68,  color:'#b07ae0', mag:8.4,  desc:'Galaxy, Ursa Major',       enabled:false},
+  // Supernova remnant
+  {id:'m1',       name:'Crab Neb M1',      ra:83.63,  dec:22.01,  color:'#e07a9a', mag:8.4,  desc:'Supernova remnant, Taurus',enabled:false},
 ];
 
 const ST={year:new Date().getFullYear(),lat:37.7749,lon:-122.4194,eH:5,wH:5,lateH:1};
@@ -1237,7 +1274,10 @@ function renderNight(){
     pts.forEach(p=>{if(p.alt>-20){if(!go){ctx.moveTo(p.x,p.y);go=true;}else ctx.lineTo(p.x,p.y);}else{if(go){ctx.stroke();ctx.beginPath();go=false;}}});
     if(go)ctx.stroke();ctx.setLineDash([]);
     // Main (above effective horizon)
-    ctx.strokeStyle=col;ctx.globalAlpha=0.9;ctx.lineWidth=obj.id==='moon'?4:2.5;
+    const isDSO = obj.type==='dso';
+    ctx.strokeStyle=col;ctx.globalAlpha=0.9;
+    ctx.lineWidth=obj.id==='moon'?4:isDSO?1.5:2.5;
+    if(isDSO) ctx.setLineDash([4,3]);
     ctx.beginPath();let started=false;
     pts.forEach(p=>{
       const minA=(p.az>45&&p.az<135)?ST.eH:(p.az>225&&p.az<315)?ST.wH:0;
@@ -1245,8 +1285,9 @@ function renderNight(){
       else{if(started){ctx.stroke();ctx.beginPath();started=false;}}
     });
     if(started)ctx.stroke();
+    if(isDSO) ctx.setLineDash([]);
     ctx.globalAlpha=1;
-    legendItems.push({name:obj.name,color:col});
+    legendItems.push({name:obj.name,color:col,dso:isDSO});
 
     // ── Jupiter GRS + shadow overlays on altitude curve ────────────────────
     if(obj.id==='jupiter'){
@@ -1403,7 +1444,10 @@ function renderNight(){
   ctx.fillText('ALTITUDE',0,0);ctx.restore();
 
   document.getElementById('nightLegend').innerHTML=
-    legendItems.map(l=>`<div class="leg-item"><div class="leg-dot" style="background:${l.color}"></div>${l.name}</div>`).join('');
+    legendItems.map(l=>l.dso
+      ? `<div class="leg-item"><div style="width:18px;height:2px;border-top:2px dashed ${l.color};margin-right:5px;flex-shrink:0;margin-top:1px"></div>${l.name}</div>`
+      : `<div class="leg-item"><div class="leg-dot" style="background:${l.color}"></div>${l.name}</div>`
+    ).join('');
 }
 
 // ── NIGHT CHART HOVER ────────────────────────────────────────────────────────
@@ -1474,6 +1518,8 @@ function showNightTT(e,{curve,interpAlt,interpAz,hoverJD}){
   } else if(obj.type==='planet'){
     const pp=planetPos(hoverJD,obj.name);
     if(pp) html+=`<div class="tt-row"><span class="tt-key">Distance</span><span class="tt-val">${pp.dist.toFixed(3)} AU</span></div>`;
+  } else if(obj.type==='dso'&&obj.desc){
+    html+=`<div class="tt-row"><span class="tt-key">Type</span><span class="tt-val">${obj.desc}</span></div>`;
   }
   tt.innerHTML=html;
   // Position tooltip: prefer right of cursor, flip left if near edge
@@ -1580,7 +1626,12 @@ function openDetail(id){
     if(pos){
       const aa=altAz(pos.ra,pos.dec,ST.lat,ST.lon,jd);
       const rst=riseSetTransit(j2=>planetPos(j2,obj.name),ST.lat,ST.lon,todayMid);
+      // Approximate visual magnitude from distance (rough H·G model for outer planets)
+      const magRanges={Mercury:'-0.4 to +5.6',Venus:'-4.9 to -3.0',Mars:'-2.9 to +1.8',
+        Jupiter:'-2.9 to -1.6',Saturn:'-0.6 to +1.2',Uranus:'+5.4 to +6.0',Neptune:'+7.8 to +8.0'};
+      const magRow=magRanges[obj.name]?`<div class="detail-row"><span class="detail-key">Magnitude range</span><span class="detail-val">${magRanges[obj.name]}</span></div>`:'';
       html+=`<div class="detail-sec"><div class="detail-sec-title">Current Status</div>
+        ${magRow}
         <div class="detail-row"><span class="detail-key">RA</span><span class="detail-val">${(pos.ra/15).toFixed(3)}h</span></div>
         <div class="detail-row"><span class="detail-key">Dec</span><span class="detail-val">${pos.dec.toFixed(2)}°</span></div>
         <div class="detail-row"><span class="detail-key">Distance</span><span class="detail-val">${pos.dist.toFixed(3)} AU</span></div>
@@ -1596,8 +1647,12 @@ function openDetail(id){
   }else if(obj.type==='dso'){
     const aa=altAz(obj.ra,obj.dec,ST.lat,ST.lon,jd);
     const rst=riseSetTransit(()=>({ra:obj.ra,dec:obj.dec}),ST.lat,ST.lon,todayMid);
+    const magStr=obj.mag!=null?obj.mag.toFixed(1):'—';
+    // Bortle context: roughly what sky class is needed to see it
+    const bortleHint=obj.mag==null?'':obj.mag<4?'Naked eye even from suburbs':obj.mag<6?'Naked eye under dark skies / binoculars from suburbs':obj.mag<8?'Binoculars or small telescope':obj.mag<10?'Small to medium telescope':'Medium to large telescope';
     html+=`<div class="detail-sec"><div class="detail-sec-title">Object Info</div>
       <div class="detail-row"><span class="detail-key">Description</span><span class="detail-val">${obj.desc||'—'}</span></div>
+      <div class="detail-row"><span class="detail-key">Magnitude</span><span class="detail-val">${magStr}${bortleHint?` <span style="color:var(--text3);font-size:10px">· ${bortleHint}</span>`:''}</span></div>
       <div class="detail-row"><span class="detail-key">RA</span><span class="detail-val">${(obj.ra/15).toFixed(3)}h</span></div>
       <div class="detail-row"><span class="detail-key">Dec</span><span class="detail-val">${obj.dec.toFixed(2)}°</span></div>
       <div class="detail-row"><span class="detail-key">Altitude now</span><span class="detail-val">${Math.round(aa.alt)}° ${aa.alt>0?'▲ visible':'▼ below'}</span></div>
@@ -1617,7 +1672,7 @@ function gotoNight() { closeDetail(); switchTab('night'); }
 // ── OPTIONS ───────────────────────────────────────────────────────────────────
 function openOpts(){
   document.getElementById('solarOpts').innerHTML=OBJECTS.map(o=>`<label class="opt-item"><input type="checkbox" ${o.enabled?'checked':''} onchange="toggleObj('${o.id}',this.checked)"><span style="color:${o.color}">${o.name}</span></label>`).join('');
-  document.getElementById('dsoOpts').innerHTML=DSO.map(o=>`<label class="opt-item"><input type="checkbox" ${o.enabled?'checked':''} onchange="toggleDSO('${o.id}',this.checked)">${o.name}</label>`).join('');
+  document.getElementById('dsoOpts').innerHTML=DSO.map(o=>`<label class="opt-item"><input type="checkbox" ${o.enabled?'checked':''} onchange="toggleDSO('${o.id}',this.checked)"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${o.color||'#888'};margin-right:4px;vertical-align:middle"></span>${o.name}</label>`).join('');
   document.getElementById('optsOverlay').classList.add('open');
 }
 function closeOpts(e) {
@@ -1648,6 +1703,7 @@ function switchTab(name){
   if(name==='night'){if(!$nightDate.value)$nightDate.value=new Date().toISOString().split('T')[0];renderNight();}
   if(name==='jupiter'){JS.year=new Date().getFullYear();JS.month=new Date().getMonth();renderJupiter();}
   if(name==='saturn'){renderSaturn();}
+  if(name==='dso'){renderDSOTab();}
 }
 function changeYear(delta) { ST.year += delta; renderYear(); }
 let holdTimer=null;
@@ -1666,9 +1722,21 @@ function applySettings(){
   ST.wH=parseFloat(document.getElementById('wHorizon').value)||0;
   ST.lateH=parseFloat(document.getElementById('lateNight').value.split(':')[0])||1;
   if (!$nightDate.value) $nightDate.value = new Date().toISOString().split('T')[0];
+  // Persist ZIP in URL hash so it survives page reloads
+  if (zip) location.hash = zip;
   renderYear();
 }
 // ── JUPITER TAB ──────────────────────────────────────────────────────────────
+// Returns the {d, e} observing window (dusk→dawn/lateH) for a given JD midnight.
+// Used by Jupiter tab (via local getWin wrapper) and Deep Sky tab.
+function nightWindow(jdMid) {
+  const jN = jdLocalNoon(jdMid, ST.lon);
+  const sv = sunEvents(jdMid, ST.lat, ST.lon);
+  return {
+    d: sv.dusk  || (jN + 7.5/24),
+    e: Math.min(sv.dawn || (jN + 19/24), jN + 12/24 + ST.lateH/24)
+  };
+}
 // Jupiter tab navigation state
 const JS={year:new Date().getFullYear(),month:new Date().getMonth(),grsLon:295};
 function changeJupMonth(delta) {
@@ -2460,6 +2528,8 @@ function useMyLocation() {
     pos => {
       ST.lat = parseFloat(pos.coords.latitude.toFixed(4));
       ST.lon = parseFloat(pos.coords.longitude.toFixed(4));
+      // Persist raw coords in URL hash
+      location.hash = `${ST.lat},${ST.lon}`;
       // Clear ZIP field to signal we're using GPS coords, not a ZIP lookup
       document.getElementById('zipInput').value = '';
       document.getElementById('zipInput').placeholder = `${ST.lat}, ${ST.lon}`;
@@ -2475,6 +2545,268 @@ function useMyLocation() {
     },
     {timeout: 10000, maximumAge: 300000}
   );
+}
+
+// ── RESTORE LOCATION FROM URL HASH ───────────────────────────────────────────
+// Supports: #95630 (ZIP lookup) or #37.77,-122.41 (raw lat,lon from Locate button)
+(function restoreFromHash(){
+  const hash = location.hash.replace('#','').trim();
+  if (!hash) return;
+  const zipEl = document.getElementById('zipInput');
+  const latLon = hash.split(',');
+  if (latLon.length === 2 && !isNaN(latLon[0]) && !isNaN(latLon[1])) {
+    // Raw coordinates stored by the Locate button
+    ST.lat = parseFloat(latLon[0]);
+    ST.lon = parseFloat(latLon[1]);
+    zipEl.value = '';
+    zipEl.placeholder = hash;
+  } else if (/^\d{5}$/.test(hash) && ZIP_DB[hash]) {
+    // ZIP code
+    zipEl.value = hash;
+  }
+})();
+
+// ── DEEP SKY TAB ──────────────────────────────────────────────────────────────
+
+// Full DSO catalog with visibility context from the reference table
+const DSO_CATALOG = [
+  {id:'m45', name:'M45',  common:'Pleiades',          ra:56.75,  dec:24.12,  type:'open',     mag:1.6,  size:110, con:'Tau',
+   bortle:{urban:'Striking blue-white spray in binoculars; naked eye in city',suburban:'Stunning naked-eye object; dozens of stars in binoculars',rural:'Broad glittering swarm; 100mm shows dense star field'}},
+  {id:'m42', name:'M42',  common:'Orion Nebula',      ra:83.82,  dec:-5.39,  type:'emission', mag:4.0,  size:65,  con:'Ori',
+   bortle:{urban:'Soft glow around Theta Ori; Trapezium in 100mm',suburban:'Fan-shaped glow visible to naked eye; structure in telescope',rural:'Luminous wing with curving form; faint outer haze in 100mm'}},
+  {id:'m44', name:'M44',  common:'Beehive',           ra:130.05, dec:19.98,  type:'open',     mag:3.1,  size:95,  con:'Cnc',
+   bortle:{urban:'Binoculars show loose star scatter; 100mm resolves members',suburban:'Naked eye possible; binoculars give lovely wide scattered view',rural:'Easy naked-eye; 100mm shows broad sprinkling across field'}},
+  {id:'m31', name:'M31',  common:'Andromeda Galaxy',  ra:10.68,  dec:41.27,  type:'galaxy',   mag:3.4,  size:178, con:'And',
+   bortle:{urban:'Faint elongated smudge; bright core in 100mm',suburban:'Dim patch naked eye; spindle in binoculars; broad halo in 100mm',rural:'Easy naked-eye; impressive elongated glow; 100mm hints at full extent'}},
+  {id:'ngc869',name:'NGC 869/884',common:'Double Cluster',ra:34.73,dec:57.13,type:'open',     mag:4.3,  size:60,  con:'Per',
+   bortle:{urban:'Binoculars show bright double patch; 100mm resolves both clusters',suburban:'Naked-eye glow; binoculars show both clusters beautifully',rural:'Easy naked eye; binoculars spectacular; 100mm shows dense star swarms'}},
+  {id:'m3',  name:'M3',   common:'',                  ra:205.55, dec:28.38,  type:'globular', mag:6.2,  size:18,  con:'CVn',
+   bortle:{urban:'Dim round glow in binoculars; compact grainy ball in 100mm',suburban:'Binoculars show distinct fuzzy ball; 100mm partially resolves edges',rural:'Naked-eye possible; 100mm resolves outer stars; dense bright center'}},
+  {id:'m81', name:'M81',  common:"Bode's Galaxy",     ra:148.89, dec:69.07,  type:'galaxy',   mag:6.9,  size:21,  con:'UMa',
+   bortle:{urban:'Very difficult; 100mm shows two faint glows',suburban:'Neither naked eye; binoculars may detect; 100mm shows oval glow + streak',rural:"M81 naked eye for experienced observers; 100mm shows core and mottled M82"}},
+  {id:'m82', name:'M82',  common:'Cigar Galaxy',      ra:148.97, dec:69.68,  type:'galaxy',   mag:8.4,  size:11,  con:'UMa',
+   bortle:{urban:'Paired with M81 in same 100mm field; narrow elongated',suburban:'100mm shows thin streak beside M81 oval glow',rural:"100mm reveals M82's elongated mottled shape alongside M81 core"}},
+  {id:'m13', name:'M13',  common:'Hercules Cluster',  ra:250.42, dec:36.46,  type:'globular', mag:5.8,  size:20,  con:'Her',
+   bortle:{urban:'Binoculars show small round haze; 100mm bright grainy globe',suburban:'Naked-eye detectable; binoculars compact glow; 100mm resolves outer stars',rural:'Easy naked eye; 100mm resolves many stars against dense central core'}},
+  {id:'m57', name:'M57',  common:'Ring Nebula',       ra:283.40, dec:33.03,  type:'planetary',mag:8.8,  size:1.4, con:'Lyr',
+   bortle:{urban:'Faint star-like in binoculars; tiny smoke ring in 100mm',suburban:'Invisible naked eye; 100mm shows ring shape against sky background',rural:'100mm shows clean ring; central hole visible; darker sky aids contrast'}},
+  {id:'m11', name:'M11',  common:'Wild Duck Cluster', ra:282.77, dec:-6.27,  type:'open',     mag:5.8,  size:14,  con:'Sct',
+   bortle:{urban:'Faint patch in rich Milky Way; 100mm dense wedge of tiny stars',suburban:'Naked-eye spot; binoculars show condensed glow; 100mm resolves stars',rural:'Naked eye; binoculars striking patch; 100mm crowded field of fine stars'}},
+  {id:'m8',  name:'M8',   common:'Lagoon Nebula',     ra:270.92, dec:-24.38, type:'emission', mag:5.8,  size:90,  con:'Sgr',
+   bortle:{urban:'Invisible naked eye; binoculars faint glow; 100mm bright patch + cluster',suburban:'May glimpse naked eye; binoculars obvious hazy glow; 100mm shows extent',rural:'Easy naked eye; binoculars show broad nebula; 100mm shows knots and haze'}},
+  {id:'m27', name:'M27',  common:'Dumbbell Nebula',   ra:299.90, dec:22.72,  type:'planetary',mag:7.5,  size:8,   con:'Vul',
+   bortle:{urban:'Binoculars faint blur from dark suburbs; 100mm soft oval patch',suburban:'Invisible naked eye; binoculars hint; 100mm shows larger rounded shape',rural:'Naked eye for experienced observers; binoculars detect; 100mm broader nebula'}},
+];
+
+const DSO_TYPE = {
+  open:     {color:'#8db4e0', label:'Open Cluster'},
+  globular: {color:'#e0c87a', label:'Globular Cluster'},
+  emission: {color:'#e07a9a', label:'Emission Nebula'},
+  planetary:{color:'#7ae0c8', label:'Planetary Nebula'},
+  galaxy:   {color:'#b07ae0', label:'Galaxy'},
+};
+
+function dsoSVG(dso, size=44) {
+  const cx=size/2, cy=size/2, r=size/2-2, s=size;
+  const tc = DSO_TYPE[dso.type]?.color || '#888';
+  const seed = dso.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const rand = (i,mn,mx) => { const v=(seed*31+i*127)%100/100; return mn+v*(mx-mn); };
+
+  if(dso.type==='open'){
+    const n=dso.id==='ngc869'?18:dso.id==='m45'?12:10;
+    let dots='';
+    for(let i=0;i<n;i++){
+      const spreadR=dso.id==='ngc869'?r*0.85:r*0.75;
+      const angle=rand(i,0,Math.PI*2),dist=rand(i+50,2,spreadR);
+      dots+=`<circle cx="${(cx+Math.cos(angle)*dist).toFixed(1)}" cy="${(cy+Math.sin(angle)*dist).toFixed(1)}" r="${rand(i+20,0.8,2.0).toFixed(1)}" fill="${tc}" opacity="${rand(i+70,0.5,1.0).toFixed(2)}"/>`;
+    }
+    const extra=dso.id==='ngc869'?`<circle cx="${cx-8}" cy="${cy}" r="${r*0.35}" fill="none" stroke="${tc}" stroke-width="0.5" opacity="0.3"/><circle cx="${cx+8}" cy="${cy}" r="${r*0.35}" fill="none" stroke="${tc}" stroke-width="0.5" opacity="0.3"/>`:'';
+    return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">${extra}${dots}</svg>`;
+  }
+  if(dso.type==='globular'){
+    let dots='';
+    for(let i=0;i<40;i++){
+      const dist=rand(i,0,r*0.9)*Math.sqrt(rand(i+10,0,1)),angle=rand(i+5,0,Math.PI*2);
+      dots+=`<circle cx="${(cx+Math.cos(angle)*dist).toFixed(1)}" cy="${(cy+Math.sin(angle)*dist).toFixed(1)}" r="${(rand(i+20,0.4,1.2)*(1-dist/(r*0.9)*0.6)).toFixed(1)}" fill="${tc}" opacity="${(rand(i+70,0.3,0.9)*(1-dist/(r*0.9)*0.5)).toFixed(2)}"/>`;
+    }
+    return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><defs><radialGradient id="gc${dso.id}" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${tc}" stop-opacity="0.35"/><stop offset="60%" stop-color="${tc}" stop-opacity="0.08"/><stop offset="100%" stop-color="${tc}" stop-opacity="0"/></radialGradient></defs><circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gc${dso.id})"/>${dots}</svg>`;
+  }
+  if(dso.type==='emission'){
+    if(dso.id==='m42') return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><defs><radialGradient id="m42g" cx="35%" cy="55%" r="60%"><stop offset="0%" stop-color="${tc}" stop-opacity="0.9"/><stop offset="40%" stop-color="${tc}" stop-opacity="0.4"/><stop offset="100%" stop-color="${tc}" stop-opacity="0"/></radialGradient></defs><path d="M${cx-2},${cy+4} C${cx-r*0.7},${cy-r*0.3} ${cx-r*0.4},${cy-r*0.8} ${cx+r*0.3},${cy-r*0.7} C${cx+r*0.8},${cy-r*0.2} ${cx+r*0.6},${cy+r*0.4} ${cx},${cy+r*0.6} Z" fill="url(#m42g)"/><circle cx="${cx-3}" cy="${cy+2}" r="1.2" fill="white" opacity="0.9"/><circle cx="${cx+2}" cy="${cy}" r="1.0" fill="white" opacity="0.8"/></svg>`;
+    return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><defs><radialGradient id="em${dso.id}" cx="45%" cy="50%" r="55%"><stop offset="0%" stop-color="${tc}" stop-opacity="0.85"/><stop offset="50%" stop-color="${tc}" stop-opacity="0.35"/><stop offset="100%" stop-color="${tc}" stop-opacity="0"/></radialGradient></defs><ellipse cx="${cx}" cy="${cy}" rx="${r*0.85}" ry="${r*0.6}" fill="url(#em${dso.id})"/><circle cx="${cx}" cy="${cy}" r="1.5" fill="white" opacity="0.8"/></svg>`;
+  }
+  if(dso.type==='planetary'){
+    if(dso.id==='m57') return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><defs><radialGradient id="m57g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${tc}" stop-opacity="0"/><stop offset="55%" stop-color="${tc}" stop-opacity="0.1"/><stop offset="72%" stop-color="${tc}" stop-opacity="0.95"/><stop offset="88%" stop-color="${tc}" stop-opacity="0.4"/><stop offset="100%" stop-color="${tc}" stop-opacity="0"/></radialGradient></defs><circle cx="${cx}" cy="${cy}" r="${r*0.8}" fill="url(#m57g)"/><circle cx="${cx}" cy="${cy}" r="${r*0.35}" fill="rgba(0,0,0,0.7)"/></svg>`;
+    if(dso.id==='m27') return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><defs><radialGradient id="m27g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${tc}" stop-opacity="0.9"/><stop offset="70%" stop-color="${tc}" stop-opacity="0.3"/><stop offset="100%" stop-color="${tc}" stop-opacity="0"/></radialGradient></defs><ellipse cx="${cx}" cy="${cy}" rx="${r*0.55}" ry="${r*0.75}" fill="url(#m27g)" opacity="0.85"/><ellipse cx="${cx}" cy="${cy-r*0.45}" rx="${r*0.38}" ry="${r*0.28}" fill="${tc}" opacity="0.7"/><ellipse cx="${cx}" cy="${cy+r*0.45}" rx="${r*0.38}" ry="${r*0.28}" fill="${tc}" opacity="0.7"/><ellipse cx="${cx}" cy="${cy}" rx="${r*0.18}" ry="${r*0.55}" fill="rgba(0,0,0,0.5)"/></svg>`;
+  }
+  if(dso.type==='galaxy'){
+    if(dso.id==='m31') return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><defs><radialGradient id="m31g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${tc}" stop-opacity="1"/><stop offset="30%" stop-color="${tc}" stop-opacity="0.6"/><stop offset="70%" stop-color="${tc}" stop-opacity="0.2"/><stop offset="100%" stop-color="${tc}" stop-opacity="0"/></radialGradient></defs><ellipse cx="${cx}" cy="${cy}" rx="${r*0.92}" ry="${r*0.32}" fill="url(#m31g)" transform="rotate(-25,${cx},${cy})"/><ellipse cx="${cx}" cy="${cy}" rx="${r*0.18}" ry="${r*0.1}" fill="${tc}" opacity="0.95" transform="rotate(-25,${cx},${cy})"/></svg>`;
+    if(dso.id==='m82') return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><defs><radialGradient id="m82g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${tc}" stop-opacity="0.9"/><stop offset="60%" stop-color="${tc}" stop-opacity="0.3"/><stop offset="100%" stop-color="${tc}" stop-opacity="0"/></radialGradient></defs><ellipse cx="${cx}" cy="${cy}" rx="${r*0.88}" ry="${r*0.2}" fill="url(#m82g)" transform="rotate(15,${cx},${cy})"/></svg>`;
+    if(dso.id==='m81') return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><defs><radialGradient id="m81g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${tc}" stop-opacity="1"/><stop offset="35%" stop-color="${tc}" stop-opacity="0.5"/><stop offset="75%" stop-color="${tc}" stop-opacity="0.15"/><stop offset="100%" stop-color="${tc}" stop-opacity="0"/></radialGradient></defs><ellipse cx="${cx}" cy="${cy}" rx="${r*0.75}" ry="${r*0.5}" fill="url(#m81g)" transform="rotate(-20,${cx},${cy})"/><ellipse cx="${cx}" cy="${cy}" rx="${r*0.15}" ry="${r*0.1}" fill="${tc}" opacity="0.95" transform="rotate(-20,${cx},${cy})"/></svg>`;
+  }
+  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><circle cx="${cx}" cy="${cy}" r="${r*0.7}" fill="none" stroke="${tc}" stroke-width="1.5" opacity="0.7"/><circle cx="${cx}" cy="${cy}" r="${r*0.15}" fill="${tc}" opacity="0.8"/></svg>`;
+}
+
+function renderDSOTab(){
+  const yr=ST.year;
+  const startJD=jdn(yr,1,1);
+  const isLeap=(yr%4===0&&yr%100!==0)||(yr%400===0);
+  const diy=isLeap?366:365;
+  const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const today=new Date(),todayJD=jdn(today.getFullYear(),today.getMonth()+1,today.getDate());
+  const todayF=(todayJD-startJD)/diy;
+
+  function nightPeakAlt(dso,jdMid){
+    const win=nightWindow(jdMid);
+    let max=-99;
+    for(let jd2=win.d;jd2<=win.e;jd2+=0.5/24){
+      const a=altAz(dso.ra,dso.dec,ST.lat,ST.lon,jd2).alt;
+      if(a>max)max=a;
+    }
+    return max;
+  }
+
+  const samples=[];
+  for(let d=0;d<diy;d+=7){
+    const jd=startJD+d,frac=d/diy;
+    const peakAlts={};
+    DSO_CATALOG.forEach(dso=>{peakAlts[dso.id]=nightPeakAlt(dso,jd);});
+    samples.push({jd,frac,peakAlts});
+  }
+
+  function visBar(dso){
+    const W=800,H=52,tc=DSO_TYPE[dso.type]?.color||'#888';
+    let rects='';
+    samples.forEach((s,i)=>{
+      const alt2=s.peakAlts[dso.id],next=samples[i+1];
+      if(alt2<10)return;
+      const x=(s.frac*W).toFixed(1),w=next?((next.frac-s.frac)*W+1).toFixed(1):'10';
+      const norm=Math.max(0,Math.min(1,(alt2-10)/60));
+      const barH=(6+norm*32).toFixed(1),barY=((H-parseFloat(barH))/2).toFixed(1);
+      rects+=`<rect x="${x}" y="${barY}" width="${w}" height="${barH}" fill="${tc}" opacity="${(0.25+norm*0.6).toFixed(2)}" rx="1"/>`;
+    });
+    return `<svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:${H}px;display:block;position:absolute;inset:0">${rects}</svg>`;
+  }
+
+  function overlay(){
+    let h=`<div style="position:absolute;inset:0;pointer-events:none">`;
+    for(let m=0;m<12;m++){const f=(jdn(yr,m+1,1)-startJD)/diy;h+=`<div style="position:absolute;left:${(f*100).toFixed(1)}%;top:0;bottom:0;width:1px;background:rgba(100,130,200,0.12)"></div>`;}
+    if(todayF>=0&&todayF<=1)h+=`<div style="position:absolute;left:${(todayF*100).toFixed(2)}%;top:0;bottom:0;width:1.5px;background:rgba(232,184,75,0.7)"></div>`;
+    return h+`</div>`;
+  }
+
+  const groups=[
+    {label:'Autumn & Winter', ids:['m45','m42','m44','m31','ngc869']},
+    {label:'Spring',          ids:['m3','m81','m82']},
+    {label:'Summer & Autumn', ids:['m13','m57','m11','m8','m27']},
+  ];
+
+  const monthHeader=MN.map((mn,m)=>{
+    const f=(jdn(yr,m+1,1)-startJD)/diy;
+    return `<div style="position:absolute;left:${(f*100).toFixed(1)}%;transform:translateX(-50%);font-size:9px;color:var(--text3);font-family:var(--mono)">${mn}</div><div style="position:absolute;left:${(f*100).toFixed(1)}%;top:0;bottom:0;width:1px;background:rgba(100,130,200,0.12)"></div>`;
+  }).join('');
+
+  let rows='';
+  groups.forEach(g=>{
+    rows+=`<div class="dso-section-label">${g.label}</div>`;
+    g.ids.forEach(id=>{
+      const dso=DSO_CATALOG.find(d=>d.id===id);if(!dso)return;
+      const tc=DSO_TYPE[dso.type]?.color||'#888';
+      rows+=`<div class="dso-row">
+        <div class="dso-info" onclick="showDSODetail('${dso.id}')">
+          <div class="dso-diagram">${dsoSVG(dso,44)}</div>
+          <div class="dso-meta">
+            <div class="dso-name">${dso.name}${dso.common?' · '+dso.common:''}</div>
+            <div class="dso-attrs">
+              <span class="dso-type-badge" style="background:${tc}22;color:${tc};border:1px solid ${tc}44">${DSO_TYPE[dso.type]?.label}</span>
+              <span>m${dso.mag}</span><span>${dso.con}</span>
+            </div>
+          </div>
+        </div>
+        <div id="dso-track-${dso.id}" class="dso-track">${visBar(dso)}${overlay()}</div>
+      </div>`;
+    });
+  });
+
+  document.getElementById('dsoTabContent').innerHTML=`
+    <div class="dso-header">
+      <div class="year-nav">
+        <button class="nav-btn" onclick="ST.year--;renderDSOTab()">‹</button>
+        <span class="year-label" style="min-width:52px;text-align:center">${yr}</span>
+        <button class="nav-btn" onclick="ST.year++;renderDSOTab()">›</button>
+      </div>
+      <div class="info-bar"><span style="color:var(--gold)">ℹ</span> Bar height = peak altitude · Hover for Bortle sky condition notes · Click object for detail</div>
+    </div>
+    <div class="dso-grid">
+      <div class="dso-tl-header">
+        <div style="padding:0 10px;display:flex;align-items:center;font-size:9px;color:var(--text3);font-family:var(--mono);border-right:1px solid var(--border)">OBJECT</div>
+        <div class="dso-month-labels">${monthHeader}${todayF>=0&&todayF<=1?`<div style="position:absolute;left:${(todayF*100).toFixed(2)}%;top:0;bottom:0;width:1.5px;background:rgba(232,184,75,0.7)"></div>`:''}</div>
+      </div>
+      ${rows}
+    </div>
+    <div class="dso-bortle-legend" style="margin-top:10px">
+      <strong style="color:var(--text)">Bar height = altitude (taller = higher in sky)</strong>
+      <span style="color:#8db4e0">■ Open cluster</span><span style="color:#e0c87a">■ Globular</span>
+      <span style="color:#e07a9a">■ Emission nebula</span><span style="color:#7ae0c8">■ Planetary nebula</span>
+      <span style="color:#b07ae0">■ Galaxy</span><span style="color:rgba(232,184,75,0.7)">│ Today</span>
+    </div>`;
+
+  const tt=$tooltip;
+  DSO_CATALOG.forEach(dso=>{
+    const el=document.getElementById('dso-track-'+dso.id);if(!el)return;
+    el.addEventListener('mousemove',e=>{
+      const rect=el.getBoundingClientRect();
+      const frac=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+      const jd=startJD+frac*diy;
+      const date=new Date((jd-JD_UNIX)*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      // Use pre-computed samples — find nearest and interpolate, no live recalculation
+      const idx=Math.min(samples.length-2,Math.max(0,Math.floor(frac*samples.length)));
+      const s0=samples[idx], s1=samples[Math.min(samples.length-1,idx+1)];
+      const t=s1.frac>s0.frac?(frac-s0.frac)/(s1.frac-s0.frac):0;
+      const peakAlt=(s0.peakAlts[dso.id]||0)*(1-t)+(s1.peakAlts[dso.id]||0)*t;
+      const tc=DSO_TYPE[dso.type]?.color||'#888';
+      const altStr=peakAlt<10?'<span style="color:#c66">Not observable this month</span>':`<span style="color:${tc}">${peakAlt.toFixed(0)}° peak altitude at night</span>`;
+      tt.innerHTML=`<div class="tt-title" style="color:${tc}">${dso.name}${dso.common?' — '+dso.common:''}</div>
+        <div class="tt-row"><span class="tt-key">${date}</span><span class="tt-val">${altStr}</span></div>
+        <div style="margin-top:6px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600">Urban/Suburban (Bortle 7–9)</div>
+        <div style="font-size:10px;color:var(--text2);line-height:1.5;margin-top:2px">${dso.bortle.urban}</div>
+        <div style="margin-top:5px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600">Suburban/Rural (Bortle 4–6)</div>
+        <div style="font-size:10px;color:var(--text2);line-height:1.5;margin-top:2px">${dso.bortle.suburban}</div>
+        <div style="margin-top:5px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600">Dark Skies (Bortle 1–3)</div>
+        <div style="font-size:10px;color:var(--text2);line-height:1.5;margin-top:2px">${dso.bortle.rural}</div>`;
+      tt.style.width='280px';
+      tt.style.left=Math.min(e.clientX+14,window.innerWidth-300)+'px';
+      tt.style.top=Math.max(8,e.clientY-180)+'px';
+      tt.classList.add('visible');
+    });
+    el.addEventListener('mouseleave',()=>{tt.classList.remove('visible');tt.style.width='';});
+    el.style.cursor='crosshair';
+  });
+}
+
+function showDSODetail(id){
+  const dso=DSO_CATALOG.find(d=>d.id===id);if(!dso)return;
+  const tc=DSO_TYPE[dso.type]?.color||'#888';
+  document.getElementById('detailName').textContent=dso.name+(dso.common?' — '+dso.common:'');
+  document.getElementById('detailType').textContent=DSO_TYPE[dso.type]?.label||dso.type;
+  document.getElementById('detailContent').innerHTML=`
+    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:12px">
+      <div style="flex-shrink:0">${dsoSVG(dso,80)}</div>
+      <div style="font-size:11px;font-family:var(--mono);line-height:1.8">
+        <div class="tt-row"><span class="tt-key">Type</span><span class="tt-val" style="color:${tc}">${DSO_TYPE[dso.type]?.label}</span></div>
+        <div class="tt-row"><span class="tt-key">Magnitude</span><span class="tt-val">${dso.mag}</span></div>
+        <div class="tt-row"><span class="tt-key">Size</span><span class="tt-val">${dso.size}'</span></div>
+        <div class="tt-row"><span class="tt-key">Constellation</span><span class="tt-val">${dso.con}</span></div>
+        <div class="tt-row"><span class="tt-key">RA / Dec</span><span class="tt-val">${(dso.ra/15).toFixed(2)}h / ${dso.dec>0?'+':''}${dso.dec.toFixed(1)}°</span></div>
+      </div>
+    </div>
+    <div style="font-size:10px;font-family:var(--mono);color:var(--text3);font-weight:600;margin-bottom:4px">URBAN/SUBURBAN (Bortle 7–9)</div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:10px">${dso.bortle.urban}</div>
+    <div style="font-size:10px;font-family:var(--mono);color:var(--text3);font-weight:600;margin-bottom:4px">SUBURBAN/RURAL (Bortle 4–6)</div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:10px">${dso.bortle.suburban}</div>
+    <div style="font-size:10px;font-family:var(--mono);color:var(--text3);font-weight:600;margin-bottom:4px">DARK SKIES (Bortle 1–3)</div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.6">${dso.bortle.rural}</div>`;
+  document.getElementById('detailPanel').classList.add('open');
 }
 
 applySettings();
@@ -2498,37 +2830,26 @@ document.addEventListener('keydown', e => {
 <div class="readme-overlay" id="readmeOverlay" onclick="closeReadme(event)">
   <div class="readme-modal">
     <button class="readme-close" onclick="closeReadme()">✕</button>
-    <h1>Skywatcher</h1>
-
+<h1>Skywatcher</h1>
 <p>A self-contained, single-file astronomy planning dashboard for amateur observers. No dependencies, no server, no internet connection required — open the HTML file in any modern browser.</p>
-
 <p>Fully configurable for any location via ZIP code or the ⌖ Locate button. Default location is San Francisco CA.</p>
-
 <hr>
-
 <h2>Quick Start</h2>
-
-<p>1. Open <code>astronomy_dashboard.html</code> in Chrome, Firefox, or Safari</p>
-<p>2. Optionally enter your ZIP code in Settings (gear icon) to set your location</p>
-<p>3. Use the four tabs to explore the year, plan a specific night, or check Jupiter and Saturn</p>
-
+<p>1. Open <code>index.html</code> in Chrome, Firefox, or Safari</p>
+<p>2. Optionally enter your ZIP code in Settings and click Apply, or click <strong>⌖ Locate</strong> to use your browser's geolocation</p>
+<p>3. Use the five tabs to explore the year, plan a specific night, or check Jupiter, Saturn, and deep sky objects</p>
+<p>Your location is saved in the URL hash (e.g. <code>#94102</code> or <code>#37.77,-122.41</code>) so it persists across reloads and can be bookmarked or shared.</p>
 <hr>
-
 <h2>Tabs</h2>
-
 <h3>Year View</h3>
-
-<p>An annual Gantt-style timeline showing every tracked object's visibility across the full calendar year. The horizontal axis is the year; each row is one object. Bars represent nights when the object rises above your effective horizon during your observing window.</p>
-
+<p>An annual Gantt-style timeline showing every tracked object's visibility across the full calendar year. Each row is one object; bars represent nights when the object rises above your effective horizon during your observing window.</p>
 <p><strong>Bar encoding:</strong></p>
 <ul>
 <li>Bar length = observable season</li>
 <li>Bar opacity = peak altitude quality (brighter = higher culmination)</li>
-<li>Colored dot = object color</li>
+<li>Phase/illumination dot on Moon and inner planet bars</li>
 </ul>
-
 <p><strong>Overlaid event markers</strong> (each toggleable via checkboxes):</p>
-
 <table>
 <tr><th>Symbol</th><th>Event</th></tr>
 <tr><td>⊕</td><td>Opposition</td></tr>
@@ -2541,306 +2862,233 @@ document.addEventListener('keydown', e => {
 <tr><td>☀</td><td>Solar eclipse</td></tr>
 <tr><td>⊙</td><td>Lunar occultation of a planet</td></tr>
 </table>
-
 <p><strong>Interactions:</strong></p>
 <ul>
-<li>Hover any bar for altitude, rise/set times, phase/illumination (where applicable)</li>
+<li>Hover any bar for altitude, rise/set times, phase/illumination</li>
 <li>Right-click any event marker to jump to that date in Single Night view</li>
-<li>Click any object label to open the detail panel</li>
+<li>Click any object label to open the detail panel (shows magnitude, position, rise/set times)</li>
 <li>Use <code>‹ Year ›</code> arrows to navigate years</li>
 </ul>
-
 <hr>
-
 <h3>Single Night View</h3>
-
 <p>An altitude-vs-time chart for any chosen date, covering dusk through dawn. Each tracked object gets a curve showing its altitude through the night.</p>
-
 <p><strong>Visual encoding:</strong></p>
+<table>
+<tr><th>Object</th><th>Line style</th></tr>
+<tr><td>Moon</td><td>Solid, 4px</td></tr>
+<tr><td>Planets</td><td>Solid, 2.5px</td></tr>
+<tr><td>Deep sky objects</td><td>Dashed, 1.5px, type color</td></tr>
+</table>
 <ul>
-<li>Solid line = above your effective horizon limit</li>
-<li>Dashed line = below limit (still plotted for context)</li>
-<li>Line weight: Moon 4px, planets 2.5px</li>
-<li>Colors match the Year View</li>
+<li>Solid line = above effective horizon</li>
+<li>Dashed ghost = below limit (plotted for context)</li>
+<li>Colors match the Year View and Deep Sky tab type colors</li>
 </ul>
-
 <p><strong>Jupiter overlay</strong> (when Jupiter is visible):</p>
 <ul>
 <li><strong>Orange stripe</strong> on Jupiter's curve = Great Red Spot within ±35° of central meridian</li>
 <li><strong>Silver stripe</strong> = Galilean moon shadow transit in progress, labeled with moon initial (I/E/G/C)</li>
 </ul>
-
 <p><strong>Conjunction annotations:</strong></p>
 <ul>
 <li>Bracket markers with separation label when two objects are within 5° of each other</li>
 </ul>
-
 <p><strong>Interactions:</strong></p>
 <ul>
-<li>Hover anywhere on the canvas for a tooltip showing time, altitude, azimuth, and phase</li>
-<li>The date picker accepts any date; click Update to redraw</li>
+<li>Hover anywhere on the canvas for a tooltip: time, altitude, azimuth, phase/distance for planets and Moon; description for DSOs</li>
+<li>Date picker accepts any date</li>
 </ul>
-
 <hr>
-
 <h3>Jupiter Tab</h3>
-
-<p>A monthly event timeline for the Galilean moon system. Designed to identify high-value observing nights — specifically shadow transits, the Great Red Spot, and rare simultaneous events.</p>
-
-<p><strong>Event rows:</strong></p>
-<ul>
-<li><strong>Io, Europa, Ganymede, Callisto</strong> — horizontal bars for shadow transits and moon transits</li>
-<li><strong>GRS</strong> — orange bars when the Great Red Spot is within ±35° of the central meridian (System II longitude)</li>
-</ul>
-
+<p>A monthly event timeline for the Galilean moon system, designed to identify high-value observing nights.</p>
+<p><strong>Event rows:</strong> Io, Europa, Ganymede, Callisto (shadow transits and disk transits), plus GRS (Great Red Spot).</p>
 <p><strong>Visual hierarchy:</strong></p>
 <ul>
 <li>Shadow transits: full-height silver/white bars (highest priority)</li>
-<li>Moon transits: shorter, dimmer bars (secondary)</li>
-<li>GRS: orange bars</li>
+<li>Moon transits: shorter, dimmer bars</li>
+<li>GRS: orange bars when within ±35° of central meridian</li>
 <li>Rare overlaps (double shadow, shadow + GRS): pulsing gold highlight</li>
 </ul>
-
-<p><strong>Best Nights chips</strong> — scored and ranked:</p>
-<ul>
-<li>Shadow in observing window: +3 pts</li>
-<li>GRS in window: +2 pts</li>
-<li>Rare overlap: +4 pts</li>
-<li>Top 8 nights shown; click any chip to jump to Single Night view</li>
-</ul>
-
-<p><strong>Column date alignment:</strong></p>
-<ul>
-<li>All bars display under their <strong>local evening date</strong> (not UT date). Events occurring in the early morning UT hours (e.g., 02:00 UT on the 23rd = 7pm PDT on the 22nd) correctly appear under the local date column.</li>
-</ul>
-
-<p><strong>Navigation:</strong></p>
-<ul>
-<li><code>‹ Month Year ›</code> arrows step through months</li>
-<li>Right-click any event bar to jump to that night in Single Night view</li>
-<li>GRS longitude field is adjustable (default 295°, System II; drifts ~1°/month)</li>
-</ul>
-
+<p><strong>Best Nights chips</strong> — scored and ranked by shadow transit (+3), GRS (+2), rare overlap (+4). Top 8 shown; click any chip to jump to Single Night.</p>
+<p><strong>Column date alignment:</strong> All bars display under their <strong>local evening date</strong> (not UT date). Events in the early morning UT hours correctly appear under the previous local date.</p>
+<p><strong>Callisto transit gap note:</strong> When Callisto transits are geometrically impossible (B₀ too large), an info banner explains why and gives the next expected window.</p>
+<p><strong>Navigation:</strong> <code>‹ Month Year ›</code> arrows, right-click any bar to jump to Single Night, GRS longitude field (default 295°, System II).</p>
 <hr>
-
 <h3>Saturn Tab</h3>
-
 <p>An annual context panel answering: <em>"Is Saturn worth observing right now, and what makes it interesting?"</em></p>
-
-<p><strong>Left panel — current context:</strong></p>
+<p><strong>Left panel:</strong></p>
 <ul>
-<li><strong>SVG ring diagram</strong> — dynamically drawn at the current ring tilt angle; thicker = more open</li>
-<li><strong>Quality rating</strong> — Excellent / Very Good / Good / Fair / Poor, based on ring tilt B</li>
-<li><strong>Ring tilt (B)</strong> — sub-Earth latitude in degrees. 0° = edge-on (rings invisible), 27° = maximum</li>
-<li><strong>Trend</strong> — whether rings are opening or closing over the next 30 days</li>
-<li><strong>Elongation</strong> — current angular separation from the Sun</li>
-<li><strong>Distance</strong> — Earth-Saturn distance in AU</li>
-<li><strong>Opposition date</strong> — next or most recent opposition for the selected year</li>
+<li><strong>SVG ring diagram</strong> — drawn at the current ring tilt; thicker ellipse = more open</li>
+<li><strong>Quality rating</strong> — Excellent / Very Good / Good / Fair / Poor (based on ring tilt B)</li>
+<li><strong>Ring tilt (B)</strong> — 0° = edge-on, 27° = maximum</li>
+<li><strong>Trend</strong> — rings opening or closing over the next 30 days</li>
+<li><strong>Elongation, distance, opposition date</strong></li>
 </ul>
-
-<p>Hover any stat row for a tooltip explaining what the value means and its observational implications.</p>
-
+<p>Hover any stat row for a tooltip explaining the value.</p>
 <p><strong>Right panel — annual timeline (three rows):</strong></p>
-
 <table>
-<tr><th>Row</th><th>What it shows</th></tr>
-<tr><td>Ring tilt</td><td>Band height proportional to \</td><td>B\</td><td>. Thin = edge-on, thick = wide open. Shaded region = observable</td></tr>
-<tr><td>Visibility</td><td>Bar brightness proportional to elongation. Dark = near conjunction, bright = near opposition</td></tr>
-<tr><td>Ring shadow</td><td>Blue highlight when shadow geometry is favorable (elongation 55–125°, B > 2°)</td></tr>
+<tr><th>Row</th><th>Encoding</th></tr>
+<tr><td>Ring tilt</td><td>Band height ∝ \</td><td>B\</td><td>. Thin = edge-on, thick = wide open</td></tr>
+<tr><td>Visibility</td><td>Bar brightness ∝ elongation</td></tr>
+<tr><td>Ring shadow</td><td>Blue window when shadow geometry is favorable (elong 55–125°, B > 2°)</td></tr>
 </table>
-
-<p>Vertical markers: opposition (orange), quadratures (blue), today (gold).</p>
-
-<p>Hover any track for a date-interpolated tooltip showing ring tilt, elongation, distance, and shadow quality at that point.</p>
-
-<p><strong>Notable Events callouts:</strong></p>
-<ul>
-<li>Opposition date and ring tilt at that moment</li>
-<li>Quadrature window and shadow arc visibility note</li>
-<li>Titan transit status (context-aware by year — see Titan note below)</li>
-</ul>
-
-<p><strong>Year navigation:</strong> <code>‹ Year ›</code> arrows; shares the <code>ST.year</code> state with Year View.</p>
-
+<p>Hover any track for a date-interpolated tooltip with ring tilt, elongation, distance, and shadow quality.</p>
+<p><strong>Notable Events callouts:</strong> opposition date, quadrature shadow note, Titan transit status (context-aware by year — last window closed early 2026, next ~2038–2040).</p>
+<p><strong>Year navigation:</strong> <code>‹ Year ›</code> arrows, shared with Year View.</p>
 <hr>
-
+<h3>Deep Sky Tab</h3>
+<p>An annual visibility timeline for 15 common deep sky objects, with Bortle sky condition context.</p>
+<p><strong>Objects included:</strong></p>
+<table>
+<tr><th>Type</th><th>Objects</th></tr>
+<tr><td>Open cluster (blue)</td><td>Pleiades M45, Beehive M44, Wild Duck M11, Double Cluster NGC 869/884, M35</td></tr>
+<tr><td>Globular cluster (gold)</td><td>Hercules M13, M3</td></tr>
+<tr><td>Emission nebula (pink)</td><td>Orion Nebula M42, Lagoon Nebula M8, Crab Nebula M1</td></tr>
+<tr><td>Planetary nebula (teal)</td><td>Ring Nebula M57, Dumbbell Nebula M27</td></tr>
+<tr><td>Galaxy (purple)</td><td>Andromeda M31, Bode's Galaxy M81, Cigar Galaxy M82</td></tr>
+</table>
+<p><strong>Timeline:</strong> Each row shows a visibility bar whose height encodes peak altitude through the night (taller = object higher in sky = more favorable). Grouped by observing season: Autumn/Winter, Spring, Summer/Autumn.</p>
+<p><strong>Hover any track:</strong> Shows the date at cursor, peak altitude, and the full three-tier Bortle context (Urban/Suburban 7–9, Suburban/Rural 4–6, Dark Skies 1–3) from the reference table.</p>
+<p><strong>Click any object label:</strong> Opens the detail panel with the SVG diagram, magnitude with telescope requirement hint, coordinates, and Bortle notes.</p>
+<p><strong>Year navigation:</strong> <code>‹ Year ›</code> arrows.</p>
+<hr>
+<h2>Object Details Panel</h2>
+<p>Click any object label in Year View or Deep Sky tab to open the detail panel.</p>
+<p><strong>Planets:</strong> Magnitude range, current RA/Dec, distance, altitude/azimuth now, today's rise/transit/set times.</p>
+<p><strong>Moon:</strong> Phase name and icon, illumination %, distance, altitude now, today's rise/transit/set.</p>
+<p><strong>Deep sky objects:</strong> Catalog magnitude with telescope requirement hint (e.g. "Binoculars or small telescope"), description, RA/Dec, altitude now, today's rise/transit/set.</p>
+<p>All panels include a <strong>View Tonight's Chart</strong> button that jumps to the Single Night tab for the current date.</p>
+<hr>
 <h2>Astronomical Methods</h2>
-
 <h3>Coordinate System</h3>
-
-<p>All positions computed in the J2000.0 ecliptic frame and converted to geocentric equatorial (RA/Dec) for alt-az projection. The observer's local sidereal time drives the hour angle used in the alt-az transformation.</p>
-
+<p>All positions computed in the J2000.0 ecliptic frame and converted to geocentric equatorial (RA/Dec) for alt-az projection. Observer's local sidereal time drives the hour angle.</p>
 <h3>Core Ephemerides</h3>
-
-<p><strong>Sun</strong> — Meeus <em>Astronomical Algorithms</em> Ch.25. Mean longitude + equation of center (3 terms). Accurate to ~0.01°.</p>
-
-<p><strong>Moon</strong> — Meeus Ch.47 simplified series. Longitude (60 terms), latitude (5 terms), distance. Accurate to ~0.1° for planning purposes.</p>
-
-<p><strong>Planets</strong> — Meeus Table 31.a orbital elements (L, e, i, Ω, ω) with secular rates. Full Keplerian orbit solution via iterative Kepler equation. Converted to geocentric equatorial via heliocentric rectangular → geocentric rectangular → equatorial rotation.</p>
-
-<blockquote><strong>Critical fix applied:</strong> The argument of latitude <code>u = v + ω − Ω</code> must be computed entirely in radians. An earlier version mixed radians (true anomaly v) with degrees (ω, Ω), producing ~90° errors in planet RA and corrupting elongation and shadow phase calculations for all months.</blockquote>
-
-<p><strong>Rise/set/transit</strong> — Meeus Ch.15 iterative method. Converges to within ~1 minute for all objects.</p>
-
+<p><strong>Sun</strong> — Meeus Ch.25. Mean longitude + equation of center (3 terms). ~0.01° accuracy.</p>
+<p><strong>Moon</strong> — Meeus Ch.47 simplified series. Longitude (60 terms), latitude (5 terms), distance. ~0.1° accuracy.</p>
+<p><strong>Planets</strong> — Meeus Table 31.a orbital elements with secular rates. Full Keplerian orbit via iterative Kepler equation. Geocentric RA/Dec via heliocentric → geocentric rectangular → equatorial rotation.</p>
+<blockquote><strong>Note:</strong> The argument of latitude <code>u = v + ω − Ω</code> must be computed entirely in radians. An earlier version mixed radians and degrees here, producing ~90° errors in planet RA.</blockquote>
+<p><strong>Rise/set/transit</strong> — Meeus Ch.15 iterative method. Converges to within ~1 minute.</p>
 <h3>Jupiter — Galilean Moon System</h3>
-
-<p><strong>Algorithm:</strong> Meeus Ch.44 simplified series. Each moon's mean longitude is perturbed by mutual interaction terms (largest: Io/Europa resonance).</p>
-
+<p><strong>Algorithm:</strong> Meeus Ch.44 simplified series with mutual interaction perturbations.</p>
 <p><strong>Sky-plane projection:</strong></p>
 <pre><code>
-x =  -a · sin(λ)                    [east-west, + = west]
-y =   a · cos(λ) · sin(B₀)          [north-south]
-z =   a · cos(λ) · cos(B₀)          [depth; z &lt; 0 = in front of Jupiter]
+x = -a · sin(λ)                  [east-west, + = west]
+y =  a · cos(λ) · sin(B₀)        [north-south]
+z =  a · cos(λ) · cos(B₀)        [depth; z &lt; 0 = in front of Jupiter]
 </code></pre>
-
-<p>where B₀ is Jupiter's sub-Earth latitude (replaces the previous fixed DE = 3.1°, which made Callisto transits geometrically impossible when |B₀| was small).</p>
-
-<p><strong>Sub-Earth latitude B₀</strong> — computed from Jupiter's heliocentric ecliptic longitude and the node/obliquity of Jupiter's equatorial plane:</p>
+<p><strong>Sub-Earth latitude B₀</strong> — computed dynamically from Jupiter's heliocentric ecliptic longitude (replaces old fixed DE = 3.1°, which made Callisto transits geometrically undetectable):</p>
 <pre><code>
 B₀ = arcsin(−sin(3.117°) · sin(λ_J − 99.44°))
 </code></pre>
-
-<p><strong>Transit detection:</strong> <code>z < 0</code> AND <code>x² + (y/0.935)² < 1</code> (disk ellipse: equatorial radius 1 Rj, polar 0.935 Rj)</p>
-
+<p><strong>Transit detection:</strong> <code>z < 0</code> AND <code>x² + (y/0.935)² < 1</code></p>
 <p><strong>Shadow displacement:</strong></p>
 <pre><code>
 shadow_x = moon_x + shadowPhase · a
-shadowPhase = ±sin(phase_angle_at_Jupiter)
+shadowPhase = ±sin(phase_angle_at_Jupiter)   [negative post-opposition]
 </code></pre>
-<p>Negative post-opposition (shadow trails east of moon). Phase angle derived from Jupiter's geocentric elongation and heliocentric distance.</p>
-
-<p><strong>Great Red Spot</strong> — System II central meridian longitude via:</p>
-<pre><code>
-CM_II = 181.62° + 870.5366° · (JD − 2443000.5)
-</code></pre>
-<p>GRS visible when |CM_II − GRS_longitude| < 35°. Default GRS longitude 295° (System II, 2026); adjustable in the UI.</p>
-
-<p><strong>Calibrated orbital elements</strong> (empirically matched to <em>Sky & Telescope</em> predictions, Apr–May 2026):</p>
-
+<p><strong>GRS:</strong> System II central meridian via <code>CM_II = 181.62° + 870.5366° · (JD − TITAN_EPOCH)</code></p>
+<p><strong>Calibrated orbital elements</strong> (matched to Sky & Telescope, Apr–May 2026):</p>
 <table>
-<tr><th>Moon</th><th>l₀ (°)</th><th>n (°/day)</th><th>Transit accuracy</th></tr>
+<tr><th>Moon</th><th>l₀ (°)</th><th>n (°/day)</th><th>Accuracy</th></tr>
 <tr><td>Io</td><td>355.50</td><td>203.48895579</td><td>±6 min</td></tr>
 <tr><td>Europa</td><td>64.80</td><td>101.37472473</td><td>±18 min</td></tr>
 <tr><td>Ganymede</td><td>64.716</td><td>50.17586719</td><td>±30 min</td></tr>
 <tr><td>Callisto</td><td>289.963</td><td>21.43479135</td><td>±20 min</td></tr>
 </table>
-
-<p>Ganymede and Callisto were calibrated from two transit midpoints each (Apr 10 and May 23 for Ganymede; Apr 20 and May 7 for Callisto), giving consistent period and initial longitude simultaneously.</p>
-
+<p><strong>Callisto transit window:</strong> Requires |B₀| < 2.03° (= arcsin(1/26.36 Rj)). Last window closed ~Jan 2027; next opens ~late 2030.</p>
 <h3>Saturn — Ring System</h3>
-
-<p><strong>Ring tilt B</strong> — sub-Earth latitude on Saturn, computed from geocentric ecliptic longitude and latitude of Saturn and Saturn's pole orientation (Meeus Ch.45):</p>
+<p><strong>Ring tilt B</strong> — Meeus Ch.45:</p>
 <pre><code>
 B = arcsin(−sin(28.048°) · cos(β) · sin(λ − 169.53°) + cos(28.048°) · sin(β))
 </code></pre>
-<p>where λ, β are Saturn's geocentric ecliptic longitude and latitude.</p>
-
-<p><strong>Titan transits</strong> — geometrically possible only when |B| < 2.83° (= arcsin(1/20.27), Titan's orbital radius in Saturn radii). The last transit window was mid-2024 through early February 2026. The next window opens around 2038–2040.</p>
-
+<p><strong>Titan transits</strong> — possible only when |B| < 2.83° (= arcsin(1/20.27 Rs)). Last window: mid-2024 through early Feb 2026. Next: ~2038–2040.</p>
 <h3>Eclipses and Occultations</h3>
-
-<p><strong>Lunar eclipses</strong> — detected by checking Moon–antisun angular separation at full moon. Umbral magnitude from shadow geometry. Penumbral eclipses (umbral magnitude < 0) are noted separately.</p>
-
-<p><strong>Solar eclipses</strong> — detected at new moon by checking Moon-Sun angular separation against the sum of apparent radii. Coverage percentage computed for the observer's location.</p>
-
-<p><strong>Planetary occultations</strong> — Moon-planet angular separation at new/full moon phases checked against the Moon's apparent radius.</p>
-
+<p><strong>Lunar eclipses</strong> — Moon–antisun separation at full moon; umbral magnitude from shadow geometry.</p>
+<p><strong>Solar eclipses</strong> — Moon–Sun separation at new moon vs sum of apparent radii; coverage % for observer's location.</p>
+<p><strong>Planetary occultations</strong> — Moon-planet separation at new/full moon vs Moon's apparent radius.</p>
 <h3>Conjunctions</h3>
-
-<p>Scanned at 12-hour intervals throughout the year for all pairs of tracked objects. Tiered by separation:</p>
-
+<p>Scanned at 12-hour intervals for all pairs of tracked objects. Daytime conjunctions filtered out.</p>
 <table>
 <tr><th>Tier</th><th>Threshold</th><th>Display</th></tr>
 <tr><td>Close</td><td>< 1.5°</td><td>Gold ⟡</td></tr>
 <tr><td>Moderate</td><td>< 5°</td><td>White ⟡</td></tr>
 <tr><td>Wide</td><td>< 10°</td><td>Blue ⟡</td></tr>
 </table>
-
-<p>Daytime conjunctions (both objects below horizon during night hours) are filtered out.</p>
-
 <hr>
-
 <h2>Observer Settings</h2>
-
 <table>
 <tr><th>Setting</th><th>Default</th><th>Notes</th></tr>
 <tr><td>ZIP code</td><td>94102 (San Francisco CA)</td><td>Looks up lat/lon from built-in table</td></tr>
-<tr><td>East horizon limit</td><td>5°</td><td>Objects below this altitude at eastern azimuths are suppressed</td></tr>
-<tr><td>West horizon limit</td><td>5°</td><td>Same for western azimuths</td></tr>
+<tr><td>⌖ Locate</td><td>—</td><td>Uses browser Geolocation API (requires permission)</td></tr>
+<tr><td>East horizon</td><td>5°</td><td>Objects below this altitude at eastern azimuths are suppressed</td></tr>
+<tr><td>West horizon</td><td>5°</td><td>Same for western azimuths</td></tr>
 <tr><td>Late night cutoff</td><td>1:00 AM</td><td>Observing window ends at this local time</td></tr>
 </table>
-
+<p><strong>URL hash persistence:</strong> After applying a ZIP or using Locate, the location is saved to the URL hash (<code>#94102</code> or <code>#37.77,-122.41</code>). Reloading the page restores the location automatically. The hash can be bookmarked or shared.</p>
 <p><strong>Supported ZIP codes (built-in):</strong></p>
-<p>94102 San Francisco CA (default) · 95630 Folsom CA · 95621 Citrus Heights CA · 95814 Sacramento CA · 90210 Beverly Hills CA · 92101 San Diego CA · 91101 Pasadena CA · 96001 Redding CA · 89101 Las Vegas NV · 97201 Portland OR · 98101 Seattle WA</p>
-
+<p>94102 San Francisco CA · 95630 Folsom CA · 95621 Citrus Heights CA · 95814 Sacramento CA · 90210 Beverly Hills CA · 92101 San Diego CA · 91101 Pasadena CA · 96001 Redding CA · 89101 Las Vegas NV · 97201 Portland OR · 98101 Seattle WA</p>
 <hr>
-
 <h2>Tracked Objects</h2>
-
 <p><strong>Solar system:</strong> Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune</p>
-
 <p><strong>Deep sky (optional, disabled by default):</strong></p>
-<p>Pleiades M45, Orion Nebula M42, Andromeda Galaxy M31, Hercules Cluster M13, Beehive M44, Crab Nebula M1, M35 Gemini, Lagoon Nebula M8</p>
-
+<table>
+<tr><th>Type</th><th>Objects</th></tr>
+<tr><td>Open clusters</td><td>Pleiades M45, Beehive M44, Wild Duck M11, Double Cluster, M35</td></tr>
+<tr><td>Globular clusters</td><td>Hercules M13, M3</td></tr>
+<tr><td>Emission nebulae</td><td>Orion Nebula M42, Lagoon Nebula M8, Crab Nebula M1</td></tr>
+<tr><td>Planetary nebulae</td><td>Ring Nebula M57, Dumbbell Nebula M27</td></tr>
+<tr><td>Galaxies</td><td>Andromeda M31, Bode's Galaxy M81, Cigar Galaxy M82</td></tr>
+</table>
+<p>Enable DSOs via the ⚙ Objects panel. Enabled DSOs appear as <strong>dashed colored curves</strong> in Single Night view alongside planets, with type-matched colors.</p>
 <hr>
-
 <h2>Code Structure</h2>
-
-<p>The entire application is ~2,400 lines of vanilla HTML/CSS/JavaScript in a single file. No build step, no framework, no external dependencies.</p>
-
+<p>Single file, ~3,150 lines of vanilla HTML/CSS/JavaScript. No build step, no framework, no external dependencies.</p>
 <pre><code>
-astronomy_dashboard.html
+index.html
 │
 ├── &lt;style&gt;          CSS variables, layout, tab system, component styles
 │
 └── &lt;script&gt;
-    ├── DOM CACHE    Cached element references ($tooltip, $nightDate, $nightCanvas)
-    ├── CONSTANTS    J2000, JD_UNIX, TITAN_EPOCH
-    ├── CORE MATH    JD conversion, date formatting, time helpers
+    ├── DOM CACHE    $tooltip, $nightDate, $nightCanvas
+    ├── CONSTANTS    J2000, JD_UNIX, TITAN_EPOCH, DEG, RAD
+    ├── CORE MATH    JD conversion, time formatting, local noon
     ├── ASTRONOMY    Sun, Moon, planets, alt/az, rise/set/transit
-    ├── OBJECTS &amp; STATE  Tracked objects, observer settings (ST), ZIP lookup
-    ├── YEAR VIEW    Annual timeline rendering, visibility bar computation
-    ├── CONJUNCTIONS Separation scanning, tier classification, marker injection
+    ├── OBJECTS &amp; STATE  DSO array (15 objects), OBJECTS, ST, ZIP_DB
+    ├── YEAR VIEW    Annual timeline, visibility bars, event markers
+    ├── CONJUNCTIONS Separation scanning, tier classification
     ├── ECLIPSES     Lunar/solar eclipse detection, occultation scanning
-    ├── PLANET EVENTS Opposition, quadrature, elongation marker computation
-    ├── NIGHT VIEW   Canvas altitude curves, Jupiter overlays, annotations
-    ├── UI HELPERS   Tooltips, detail panel, options, tab switching
-    ├── JUPITER TAB  Monthly Galilean moon shadow/transit timeline + scoring
-    └── SATURN TAB   Annual ring context, shadow geometry, hover tooltips
+    ├── PLANET EVENTS Opposition, quadrature, elongation markers
+    ├── NIGHT VIEW   Canvas altitude curves, DSO dashed lines, Jupiter overlays
+    ├── UI HELPERS   Tooltips, detail panel (with magnitude), tabs, settings
+    ├── JUPITER TAB  Galilean moon timeline, nightWindow(), scoring
+    ├── SATURN TAB   Ring tilt context, shadow geometry, Titan note
+    └── DEEP SKY TAB DSO_CATALOG (13 entries), dsoSVG(), Bortle tooltips
 </code></pre>
-
 <p><strong>Key constants:</strong></p>
 <pre><code>
-const J2000      = 2451545.0;  // JD of J2000.0 epoch
-const JD_UNIX    = 2440587.5;  // JD of Unix epoch
-const TITAN_EPOCH = 2443000.5; // Reference epoch for Galilean moon elements
-const DEG = Math.PI / 180;     // degrees → radians
-const RAD = 180 / Math.PI;     // radians → degrees
+const J2000       = 2451545.0;  // JD of J2000.0 epoch
+const JD_UNIX     = 2440587.5;  // JD of Unix epoch
+const TITAN_EPOCH = 2443000.5;  // Reference epoch for Galilean moon elements
+const DEG = Math.PI / 180;      // degrees → radians
+const RAD = 180 / Math.PI;      // radians → degrees
 </code></pre>
-
 <hr>
-
 <h2>Limitations and Known Accuracy</h2>
-
 <ul>
 <li><strong>Planetary positions:</strong> ~0.1° (sufficient for naked-eye and telescope planning)</li>
-<li><strong>Conjunction timing:</strong> ±12 hours (12-hour scan step + hourly refinement)</li>
-<li><strong>Eclipse detection:</strong> umbral magnitude within ~5%; type (total/partial/penumbral) correct</li>
+<li><strong>Conjunction timing:</strong> ±12 hours</li>
+<li><strong>Eclipse detection:</strong> umbral magnitude within ~5%; type correct</li>
 <li><strong>Galilean moon transits:</strong> see calibration table above</li>
 <li><strong>Saturn ring tilt:</strong> ~0.1° accuracy</li>
-<li><strong>No light-time correction</strong> — positions are geometric, not apparent</li>
-<li><strong>No atmospheric refraction</strong> — altitudes are geometric; add ~0.5° near horizon</li>
-<li><strong>No precession beyond J2000</strong> — adequate for ±10 year range around 2026</li>
+<li><strong>No light-time correction</strong> — geometric positions only</li>
+<li><strong>No atmospheric refraction</strong> — add ~0.5° near horizon</li>
+<li><strong>No precession beyond J2000</strong> — adequate for ±10 years around 2026</li>
 </ul>
-
 <hr>
-
 <h2>Reference</h2>
-
 <p>Meeus, J. <em>Astronomical Algorithms</em>, 2nd ed. Willmann-Bell, 1998.</p>
-
 <p>Calibration data: <em>Sky & Telescope</em> planet and satellite event tables, April–May 2026.</p>
-
+<p>DSO descriptions and Bortle context adapted from standard amateur astronomy references.</p>
   </div>
 </div>
 
