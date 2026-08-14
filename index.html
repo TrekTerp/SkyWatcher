@@ -519,7 +519,22 @@ const DSO=[
   {id:'m81',      name:"Bode's Gal M81",   ra:148.89, dec:69.07,  color:'#b07ae0', mag:6.9,  desc:'Galaxy, Ursa Major',       enabled:false},
   {id:'m82',      name:'Cigar Gal M82',    ra:148.97, dec:69.68,  color:'#b07ae0', mag:8.4,  desc:'Galaxy, Ursa Major',       enabled:false},
   // Supernova remnant
-  {id:'m1',       name:'Crab Neb M1',      ra:83.63,  dec:22.01,  color:'#e07a9a', mag:8.4,  desc:'Supernova remnant, Taurus',enabled:false},
+  {id:'m1',       name:'Crab Neb M1',      ra:83.63,  dec:22.01,  color:'#e07a9a', mag:8.4,  desc:'Supernova remnant, Taurus',  enabled:false},
+  // Summer emission nebulae
+  {id:'m17',      name:'Swan Neb M17',      ra:275.20, dec:-16.18, color:'#e07a9a', mag:6.0,  desc:'Emission nebula, Sagittarius',enabled:false},
+  {id:'m16',      name:'Eagle Neb M16',     ra:274.70, dec:-13.79, color:'#e07a9a', mag:6.4,  desc:'Emission nebula, Serpens',   enabled:false},
+  {id:'m20',      name:'Trifid Neb M20',    ra:270.60, dec:-23.03, color:'#e07a9a', mag:6.3,  desc:'Emission/reflection, Sagittarius',enabled:false},
+  {id:'ngc7000',  name:'N.America NGC 7000',ra:314.75, dec:44.53,  color:'#e07a9a', mag:4.0,  desc:'Emission nebula, Cygnus',    enabled:false},
+  {id:'ngc6888',  name:'Crescent NGC 6888', ra:303.12, dec:38.36,  color:'#e07a9a', mag:7.4,  desc:'Emission nebula, Cygnus',    enabled:false},
+  // Supernova remnant
+  {id:'ngc6960',  name:'Veil NGC 6960/92',  ra:313.50, dec:31.73,  color:'#f0a070', mag:7.0,  desc:'Supernova remnant, Cygnus',  enabled:false},
+  // Additional planetary nebulae
+  {id:'ngc7293',  name:'Helix NGC 7293',    ra:337.41, dec:-20.84, color:'#7ae0c8', mag:7.3,  desc:'Planetary nebula, Aquarius', enabled:false},
+  {id:'ngc7009',  name:'Saturn Neb NGC 7009',ra:316.40,dec:-11.36, color:'#7ae0c8', mag:8.0,  desc:'Planetary nebula, Aquarius', enabled:false},
+  {id:'ngc2392',  name:'Eskimo NGC 2392',   ra:112.29, dec:20.91,  color:'#7ae0c8', mag:8.6,  desc:'Planetary nebula, Gemini',   enabled:false},
+  {id:'ngc3242',  name:'Ghost Jup NGC 3242',ra:156.02, dec:-18.63, color:'#7ae0c8', mag:7.7,  desc:'Planetary nebula, Hydra',    enabled:false},
+  {id:'m97',      name:'Owl Neb M97',       ra:168.70, dec:55.02,  color:'#7ae0c8', mag:9.9,  desc:'Planetary nebula, Ursa Major',enabled:false},
+  {id:'m76',      name:'Little Dumbbell M76',ra:25.58, dec:51.57,  color:'#7ae0c8', mag:10.1, desc:'Planetary nebula, Perseus',  enabled:false},
 ];
 
 const ST={year:new Date().getFullYear(),lat:37.7749,lon:-122.4194,eH:5,wH:5,lateH:1};
@@ -1650,9 +1665,16 @@ function openDetail(id){
     const magStr=obj.mag!=null?obj.mag.toFixed(1):'—';
     // Bortle context: roughly what sky class is needed to see it
     const bortleHint=obj.mag==null?'':obj.mag<4?'Naked eye even from suburbs':obj.mag<6?'Naked eye under dark skies / binoculars from suburbs':obj.mag<8?'Binoculars or small telescope':obj.mag<10?'Small to medium telescope':'Medium to large telescope';
+    // Look up filter recommendation from DSO_CATALOG if available
+    const catEntry=typeof DSO_CATALOG!=='undefined'?DSO_CATALOG.find(d=>d.id===obj.id):null;
+    const fi=catEntry?.filter;
+    const filterRow=fi&&fi.rec!=='none'
+      ?`<div class="detail-row"><span class="detail-key">Best filter</span><span class="detail-val" style="color:#7ae0c8">${fi.rec}${fi.alt?' <span style="color:var(--text3)">/ '+fi.alt+'</span>':''}<br><span style="font-size:10px;color:var(--text3)">${fi.note||''}</span></span></div>`
+      :(fi?`<div class="detail-row"><span class="detail-key">Filter</span><span class="detail-val" style="color:var(--text3)">None useful</span></div>`:'');
     html+=`<div class="detail-sec"><div class="detail-sec-title">Object Info</div>
       <div class="detail-row"><span class="detail-key">Description</span><span class="detail-val">${obj.desc||'—'}</span></div>
       <div class="detail-row"><span class="detail-key">Magnitude</span><span class="detail-val">${magStr}${bortleHint?` <span style="color:var(--text3);font-size:10px">· ${bortleHint}</span>`:''}</span></div>
+      ${filterRow}
       <div class="detail-row"><span class="detail-key">RA</span><span class="detail-val">${(obj.ra/15).toFixed(3)}h</span></div>
       <div class="detail-row"><span class="detail-key">Dec</span><span class="detail-val">${obj.dec.toFixed(2)}°</span></div>
       <div class="detail-row"><span class="detail-key">Altitude now</span><span class="detail-val">${Math.round(aa.alt)}° ${aa.alt>0?'▲ visible':'▼ below'}</span></div>
@@ -2571,10 +2593,13 @@ function useMyLocation() {
 // Full DSO catalog with visibility context from the reference table
 const DSO_CATALOG = [
   {id:'m45', name:'M45',  common:'Pleiades',          ra:56.75,  dec:24.12,  type:'open',     mag:1.6,  size:110, con:'Tau',
+   filter:{rec:'none',note:'Open cluster — no nebula filter useful or needed'},
    bortle:{urban:'Striking blue-white spray in binoculars; naked eye in city',suburban:'Stunning naked-eye object; dozens of stars in binoculars',rural:'Broad glittering swarm; 100mm shows dense star field'}},
   {id:'m42', name:'M42',  common:'Orion Nebula',      ra:83.82,  dec:-5.39,  type:'emission', mag:4.0,  size:65,  con:'Ori',
+   filter:{rec:'UHC',alt:'OIII',note:'UHC for outer extent and color; OIII for inner detail and contrast'},
    bortle:{urban:'Soft glow around Theta Ori; Trapezium in 100mm',suburban:'Fan-shaped glow visible to naked eye; structure in telescope',rural:'Luminous wing with curving form; faint outer haze in 100mm'}},
   {id:'m44', name:'M44',  common:'Beehive',           ra:130.05, dec:19.98,  type:'open',     mag:3.1,  size:95,  con:'Cnc',
+   filter:{rec:'none',note:'Open cluster — no filter needed'},
    bortle:{urban:'Binoculars show loose star scatter; 100mm resolves members',suburban:'Naked eye possible; binoculars give lovely wide scattered view',rural:'Easy naked-eye; 100mm shows broad sprinkling across field'}},
   {id:'m31', name:'M31',  common:'Andromeda Galaxy',  ra:10.68,  dec:41.27,  type:'galaxy',   mag:3.4,  size:178, con:'And',
    bortle:{urban:'Faint elongated smudge; bright core in 100mm',suburban:'Dim patch naked eye; spindle in binoculars; broad halo in 100mm',rural:'Easy naked-eye; impressive elongated glow; 100mm hints at full extent'}},
@@ -2596,6 +2621,44 @@ const DSO_CATALOG = [
    bortle:{urban:'Invisible naked eye; binoculars faint glow; 100mm bright patch + cluster',suburban:'May glimpse naked eye; binoculars obvious hazy glow; 100mm shows extent',rural:'Easy naked eye; binoculars show broad nebula; 100mm shows knots and haze'}},
   {id:'m27', name:'M27',  common:'Dumbbell Nebula',   ra:299.90, dec:22.72,  type:'planetary',mag:7.5,  size:8,   con:'Vul',
    bortle:{urban:'Binoculars faint blur from dark suburbs; 100mm soft oval patch',suburban:'Invisible naked eye; binoculars hint; 100mm shows larger rounded shape',rural:'Naked eye for experienced observers; binoculars detect; 100mm broader nebula'}},
+  // ── Summer/autumn emission nebulae ───────────────────────────────────────────
+  {id:'m17', name:'M17', common:'Swan/Omega Nebula',  ra:275.20, dec:-16.18, type:'emission', mag:6.0, size:46,  con:'Sgr',
+   filter:{rec:'OIII',alt:'UHC',note:'OIII shows dramatic dark lane on west side of swan neck; UHC brighter with more outer extent. One of the best filter objects'},
+   bortle:{urban:'Bright enough to see as a glow; 100mm shows the swan neck shape',suburban:'Naked-eye detectable; binoculars show the omega/swan; 100mm shows outer loop',rural:'Easy naked eye; OIII reveals striking dark lane and complex dark detail'}},
+  {id:'m16', name:'M16', common:'Eagle Nebula',       ra:274.70, dec:-13.79, type:'emission', mag:6.4, size:35,  con:'Ser',
+   filter:{rec:'UHC',alt:'OIII',note:'UHC shows broad T-shape nebula; OIII reveals dark finger-like Pillars of Creation with averted vision'},
+   bortle:{urban:'Only the star cluster visible; nebula needs dark sky',suburban:'Nebula faintly visible around cluster; UHC transforms the view',rural:'Fan-shaped nebula obvious; UHC or OIII show dark inclusions and the pillar region'}},
+  {id:'m20', name:'M20', common:'Trifid Nebula',      ra:270.60, dec:-23.03, type:'emission', mag:6.3, size:28,  con:'Sgr',
+   filter:{rec:'UHC',alt:'H-beta',note:'UHC for emission lobes; H-beta shows more emission extent; OIII hurts the northern reflection lobe'},
+   bortle:{urban:'Cluster visible; nebula needs dark sky and low power',suburban:'Three emission lobes visible; dark lanes between them require averted vision',rural:'All three lobes and dark dividing lanes obvious; blue northern reflection lobe adds contrast'}},
+  {id:'ngc7000', name:'NGC 7000', common:'North America Nebula', ra:314.75, dec:44.53, type:'emission', mag:4.0, size:120, con:'Cyg',
+   filter:{rec:'UHC',alt:'OIII',note:'Use binoculars or richest-field telescope — too large for most fields. UHC shows the continental outline; object is nearly invisible without a filter'},
+   bortle:{urban:'Invisible without filter even in telescope',suburban:'UHC in binoculars or RFT shows the continental shape clearly',rural:'Naked eye with UHC held up; binoculars show Gulf of Mexico dark bay and outer structure'}},
+  {id:'ngc6888', name:'NGC 6888', common:'Crescent Nebula', ra:303.12, dec:38.36, type:'emission', mag:7.4, size:20, con:'Cyg',
+   filter:{rec:'OIII',alt:'UHC',note:'Nearly invisible without a filter. OIII is near-mandatory — shows the complete oval ring. One of the most filter-dependent objects in the sky'},
+   bortle:{urban:'Not visible without filter; OIII may show the brightest arc in 100mm',suburban:'OIII shows the oval crescent shape; UHC shows more outer nebulosity',rural:'OIII reveals complete ring with filamentary detail and glowing interior'}},
+  {id:'ngc6960', name:'NGC 6960/6992', common:'Veil Nebula', ra:313.50, dec:31.73, type:'emission', mag:7.0, size:180, con:'Cyg',
+   filter:{rec:'OIII',alt:'UHC',note:'OIII is transformative — the most dramatic filter response of any object. Scan slowly across both arcs at low power. Fine filaments emerge across the entire loop'},
+   bortle:{urban:'Invisible without filter; OIII reveals at least the brightest arc through 52 Cygni',suburban:'OIII shows both arcs with filamentary texture at low power',rural:'OIII reveals the complete loop with fine filaments across the interior — resembles photographs'}},
+  // ── Additional planetary nebulae ──────────────────────────────────────────────
+  {id:'ngc7293', name:'NGC 7293', common:'Helix Nebula', ra:337.41, dec:-20.84, type:'planetary', mag:7.3, size:16, con:'Aqr',
+   filter:{rec:'OIII',alt:'UHC',note:'Largest planetary nebula in angular size. Low power essential. OIII shows hints of the helical structure and outer filaments; fat annular ring obvious'},
+   bortle:{urban:'Too large and low surface brightness for suburban skies',suburban:'Detectable in binoculars from good sites; OIII essential for any structure',rural:'Easy in binoculars; OIII shows the fat annular ring and hints of helical outer structure'}},
+  {id:'ngc7009', name:'NGC 7009', common:'Saturn Nebula', ra:316.40, dec:-11.36, type:'planetary', mag:8.0, size:1.7, con:'Aqr',
+   filter:{rec:'OIII',alt:'UHC',note:'Filters not strictly needed but OIII makes the "ansae" (handle extensions) prominent — the feature giving it the Saturn name. High surface brightness'},
+   bortle:{urban:'Small blue-green oval visible in 100mm even from suburbs',suburban:'OIII or UHC shows the ansae off each end at 150-200x',rural:'Ansae obvious even without filter; OIII reveals inner shell detail and the extensions clearly'}},
+  {id:'ngc2392', name:'NGC 2392', common:'Eskimo Nebula', ra:112.29, dec:20.91, type:'planetary', mag:8.6, size:0.8, con:'Gem',
+   filter:{rec:'OIII',alt:'UHC',note:'OIII at moderate power shows both shells clearly and darkens the background. Stands out well due to high surface brightness. Winter showpiece'},
+   bortle:{urban:'Visible as a blue-green disk in 100mm even from city; double shell needs 150x',suburban:'OIII shows inner disk and outer shell distinctly at 150x',rural:'Inner and outer shells clearly separated; OIII reveals interesting blue-green color'}},
+  {id:'ngc3242', name:'NGC 3242', common:'Ghost of Jupiter', ra:156.02, dec:-18.63, type:'planetary', mag:7.7, size:1.4, con:'Hya',
+   filter:{rec:'UHC',alt:'OIII',note:'UHC reveals faint circular outer halo beyond the two inner shells — three-shell structure. OIII makes inner shells blaze. Easy without filter but the halo is the prize'},
+   bortle:{urban:'Bright blue-green disk obvious in 100mm; outer halo needs filter',suburban:'UHC or OIII shows inner shell structure and the faint outer halo',rural:'Three-shell structure visible; outer halo detectable with UHC and averted vision'}},
+  {id:'m97', name:'M97', common:'Owl Nebula', ra:168.70, dec:55.02, type:'planetary', mag:9.9, size:3.4, con:'UMa',
+   filter:{rec:'OIII',alt:'UHC',note:'OIII gives the biggest contrast boost of any filter here; both "eyes" (dark inclusions giving it the owl face) visible with OIII. Low surface brightness — needs dark sky'},
+   bortle:{urban:'Too faint for most suburban skies',suburban:'Detectable in 100mm under good conditions; OIII essential for the owl eyes',rural:'OIII shows both dark eye inclusions against the disk; hints of irregular outer edge'}},
+  {id:'m76', name:'M76', common:'Little Dumbbell', ra:25.58, dec:51.57, type:'planetary', mag:10.1, size:2.7, con:'Per',
+   filter:{rec:'UHC',alt:'OIII',note:'UHC reveals faint "wing" extensions off each lobe turning the dumbbell into a butterfly shape — a miniature M27 that rewards filter use. Dim but rewarding'},
+   bortle:{urban:'Dim; challenging in 100mm without dark sky',suburban:'UHC shows both main lobes with hints of the lateral wings',rural:'UHC or OIII reveals the full butterfly shape with all four lobes; rewarding autumn object'}},
 ];
 
 const DSO_TYPE = {
@@ -2696,9 +2759,11 @@ function renderDSOTab(){
   }
 
   const groups=[
-    {label:'Autumn & Winter', ids:['m45','m42','m44','m31','ngc869']},
-    {label:'Spring',          ids:['m3','m81','m82']},
-    {label:'Summer & Autumn', ids:['m13','m57','m11','m8','m27']},
+    {label:'Autumn & Winter', ids:['m45','m42','m44','m31','ngc869','m76']},
+    {label:'Spring',          ids:['m3','m81','m82','m97','ngc3242']},
+    {label:'Summer',          ids:['m13','m17','m16','m20','ngc7000','ngc6888']},
+    {label:'Summer & Autumn', ids:['m57','m11','m8','m27','ngc6960','ngc7293','ngc7009','m1']},
+    {label:'Winter',          ids:['m35','ngc2392']},
   ];
 
   const monthHeader=MN.map((mn,m)=>{
@@ -2768,6 +2833,7 @@ function renderDSOTab(){
       const altStr=peakAlt<10?'<span style="color:#c66">Not observable this month</span>':`<span style="color:${tc}">${peakAlt.toFixed(0)}° peak altitude at night</span>`;
       tt.innerHTML=`<div class="tt-title" style="color:${tc}">${dso.name}${dso.common?' — '+dso.common:''}</div>
         <div class="tt-row"><span class="tt-key">${date}</span><span class="tt-val">${altStr}</span></div>
+        ${dso.filter&&dso.filter.rec!=='none'?`<div class="tt-row"><span class="tt-key">Best filter</span><span class="tt-val" style="color:#7ae0c8">${dso.filter.rec}${dso.filter.alt?' / '+dso.filter.alt:''}</span></div>`:''}
         <div style="margin-top:6px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600">Urban/Suburban (Bortle 7–9)</div>
         <div style="font-size:10px;color:var(--text2);line-height:1.5;margin-top:2px">${dso.bortle.urban}</div>
         <div style="margin-top:5px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600">Suburban/Rural (Bortle 4–6)</div>
