@@ -211,12 +211,75 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 .readme-hero h1{margin:0 0 6px!important;font-size:26px!important}
 .readme-hero p{margin:0!important;color:var(--text2);max-width:46%;font-size:13px}
 @media(max-width:700px){.readme-hero{height:170px;padding-top:52px}.readme-hero p{max-width:60%}}
+/* ── v15: Tonight tab ─────────────────────────────────────────────── */
+.tn-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.tn-date{font-family:var(--mono);font-size:14px;color:var(--accent);min-width:220px;text-align:center}
+.tn-equip{font-size:12px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer}
+.tn-equip:hover{color:var(--text);border-color:var(--border2)}
+.tn-verdict{border-radius:var(--radius);padding:14px 18px;margin-bottom:12px;border:1px solid var(--border);background:var(--bg2);border-left-width:4px}
+.tn-good{border-left-color:#6db}.tn-fair{border-left-color:#e8b84b}.tn-moon{border-left-color:#d4c9a8}.tn-poor{border-left-color:#c66}
+.tn-vhead{font-size:18px;font-weight:600;color:var(--text);margin-bottom:4px}
+.tn-vsub{font-size:13px;color:var(--text2);line-height:1.6}
+.tn-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;min-width:0}
+.tn-card-title{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:10px;display:flex;gap:10px;align-items:center}
+.tn-edit{color:var(--accent);cursor:pointer;text-transform:none;letter-spacing:0}
+.tn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.tn-grid>.tn-card{margin-bottom:0}
+.tn-grid{margin-bottom:12px}
+.tn-timeline{width:100%;height:56px;display:block}
+.tn-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:6px}
+.tn-legend b{color:var(--text);font-weight:600}
+.sw{display:inline-block;width:10px;height:8px;border-radius:2px;margin-right:4px;vertical-align:middle}
+.tn-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 4px;border-bottom:1px solid var(--border);font-size:13px;cursor:pointer;border-radius:4px}
+.tn-row:last-child{border-bottom:none}.tn-row:hover{background:var(--bg3)}
+.tn-row b{font-weight:600;color:var(--text)}
+.tn-muted{color:var(--text3);font-size:12px}
+.tn-note{margin-left:auto;font-size:11px;color:var(--text2);font-family:var(--mono)}
+.tn-chip{font-size:9px;font-family:var(--mono);text-transform:uppercase;padding:2px 6px;border:1px solid;border-radius:3px;letter-spacing:.05em}
+.tn-picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.tn-pick{display:flex;gap:12px;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer}
+.tn-pick:hover{border-color:var(--border2)}
+.tn-pick-art{flex-shrink:0;width:64px;height:64px}
+.tn-pick-body{min-width:0}
+.tn-pick-name{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.tn-pick-meta{font-size:11px;color:var(--text3);font-family:var(--mono);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tn-pick-text{font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0}
+.tn-more{color:var(--accent);cursor:pointer;margin-right:10px;white-space:nowrap}
+.tn-foot{font-size:10px;color:var(--text3);margin-top:10px;font-family:var(--mono)}
+.reach-badge{font-size:9px;font-family:var(--mono);padding:1px 5px;border:1px solid;border-radius:3px;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+/* ── v15: setup panel ── */
+.setup-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;padding:5px 0;color:var(--text2)}
+.setup-row select{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:4px 6px;font-size:12px;max-width:240px}
+/* ── v15: Deep Sky tiers + moon row ── */
+.tier-h{margin-top:6px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600}
+.tier-t{font-size:10px;color:var(--text2);line-height:1.5;margin-top:2px}
+.tier-dim{opacity:.45}
+.tier-you{color:var(--accent);font-weight:400;margin-left:4px}
+.dso-moon-row .dso-info{cursor:default}
+/* ── v15: Jupiter diagram ── */
+.jup-diag-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:10px}
+.jup-diag-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;margin-bottom:6px}
+.jup-diag-head input[type=date],.jup-diag-head select{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:3px 7px;font-size:12px;font-family:var(--mono)}
+.jup-diag-time{font-family:var(--mono);font-size:15px;color:var(--accent);min-width:48px}
+.jup-diag-slider{width:100%;accent-color:var(--accent);margin:2px 0 6px;height:28px}
+.jup-diagram-notes{font-size:11px;color:var(--text2);font-family:var(--mono);margin-top:4px}
+/* ── v15: red night-vision mode (filter each top-level element so fixed panels keep working) ── */
+html.red,html.red body{background:#000}
+html.red body>*{filter:grayscale(1) sepia(1) saturate(10) hue-rotate(-42deg) brightness(.7)}
+#redBtn.on{background:#3a0000;color:#ff6b6b;border-color:#900}
+/* ── v15: touch & phone ── */
+.tabs{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0}
+.tl-track,.jup-track,.dso-track,#nightCanvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.hint-touch{display:none}
+@media(pointer:coarse){.hint-mouse{display:none}.hint-touch{display:inline}.nav-btn{width:34px;height:34px}.btn-sm{padding:6px 11px}}
+@media(max-width:700px){.detail-panel{width:100%}.content{padding:12px}.tn-date{min-width:0}.tn-vhead{font-size:16px}.tn-picks{grid-template-columns:1fr}}
 .dso-bortle-legend{display:flex;gap:16px;align-items:center;font-size:10px;font-family:var(--mono);color:var(--text3);flex-wrap:wrap;padding:6px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)}
 </style>
 </head>
 <body>
 <div class="header">
-  <div class="logo"><img id="logoImg" alt=""> SKYWATCHER <span style="font-size:10px;color:var(--text3)">v14</span></div>
+  <div class="logo"><img id="logoImg" alt=""> SKYWATCHER <span style="font-size:10px;color:var(--text3)">v15</span></div>
   <div class="settings-bar">
     <label>ZIP</label><input type="text" id="zipInput" value="94102" placeholder="ZIP or lat,lon" style="width:120px" title="5-digit ZIP from the built-in table, or type lat,lon (e.g. 38.69,-121.31)">
     <button class="btn btn-sm btn-outline" onclick="useMyLocation()" title="Use browser geolocation">⌖ Locate</button>
@@ -225,24 +288,34 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
     <label>Late Night</label><input type="text" id="lateNight" value="01:00" style="width:65px" title="Local clock time the night ends for you. 24-h or am/pm: 23:00, 11pm, 00:30, 1:00">
     <button class="btn btn-sm" onclick="applySettings()">Apply</button>
     <button class="btn btn-sm btn-outline" onclick="openOpts()">⚙ Objects</button>
+    <button class="btn btn-sm btn-outline" id="redBtn" onclick="toggleRed()" title="Red night-vision mode (shortcut: R)">☾ Red</button>
     <button class="btn btn-sm btn-outline btn-readme" onclick="openReadme()" title="Documentation">? README</button>
   </div>
 </div>
 <div class="tabs">
-  <div class="tab active" id="tab-year" onclick="switchTab('year')">Year View</div>
+  <div class="tab active" id="tab-tonight" onclick="switchTab('tonight')">Tonight</div>
+  <div class="tab" id="tab-year" onclick="switchTab('year')">Year View</div>
   <div class="tab" id="tab-night" onclick="switchTab('night')">Single Night</div>
   <div class="tab" id="tab-jupiter" onclick="switchTab('jupiter')">Jupiter</div>
   <div class="tab" id="tab-saturn" onclick="switchTab('saturn')">Saturn</div>
   <div class="tab" id="tab-dso" onclick="switchTab('dso')">Deep Sky</div>
 </div>
-<div class="content active" id="content-year">
+<div class="content active" id="content-tonight">
+  <div class="tn-head">
+    <div class="year-nav"><button class="nav-btn" onclick="changeTonight(-1)" title="Previous night">‹</button><span class="tn-date" id="tnDate"></span><button class="nav-btn" onclick="changeTonight(1)" title="Next night">›</button></div>
+    <button class="btn btn-sm btn-outline" onclick="TN.date=null;renderTonight()">Tonight</button>
+    <span class="tn-equip" onclick="openOpts()" title="Change your instrument and sky">🔭 <span id="tnEquip"></span> ✎</span>
+  </div>
+  <div id="tonightContent"></div>
+</div>
+<div class="content" id="content-year">
   <div class="year-controls">
     <div class="year-nav">
       <button class="nav-btn" onclick="changeYear(-1)">‹</button>
       <span class="year-label" id="yearLabel">2026</span>
       <button class="nav-btn" onclick="changeYear(1)">›</button>
     </div>
-    <div class="info-bar"><span style="color:var(--gold)">ℹ</span> Bars show evening visibility window (dusk → late night). Hover for details · Click for object panel · Hold-click to jump to Night view</div>
+    <div class="info-bar"><span style="color:var(--gold)">ℹ</span> Bars show evening visibility window (dusk → late night). <span class="hint-mouse">Hover for details · Click for object panel · Right-click a marker to open that night</span><span class="hint-touch">Tap for details · Long-press a marker to open that night</span></div>
   </div>
   <div class="tl-container" id="yearTimeline"></div>
   <div id="yearLegend" style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;margin-top:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);font-size:11px;font-family:var(--mono)">
@@ -303,8 +376,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
       <button class="btn btn-sm" onclick="applyGRS()">Apply</button>
       <button class="btn btn-sm btn-outline" onclick="resetGRS()" title="Return to the automatic S&amp;T/JUPOS drift model">Auto</button>
     </div>
-    <div class="info-bar"><span style="color:var(--gold)">ℹ</span> Shaded bars = within your observing window · Gold = rare overlap event · Right-click bar → jump to that night</div>
+    <div class="info-bar"><span style="color:var(--gold)">ℹ</span> Shaded bars = within your observing window · Gold = rare overlap event · <span class="hint-mouse">Click a bar to show it in the diagram · Right-click → open that night</span><span class="hint-touch">Tap a bar to show it in the diagram · Long-press → open that night</span></div>
   </div>
+  <div id="jupDiagram"></div>
   <div id="jupContent"></div>
 </div>
 <div class="content" id="content-night">
@@ -341,7 +415,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 </div>
 <div class="opts-overlay" id="optsOverlay" onclick="closeOpts(event)">
   <div class="opts-popup" onclick="event.stopPropagation()">
-    <div class="opts-title">Display Objects <button class="btn btn-sm btn-outline" onclick="closeOpts()">Done</button></div>
+    <div class="opts-title">Setup &amp; Objects <button class="btn btn-sm btn-outline" onclick="closeOpts()">Done</button></div>
+    <div class="opts-sec"><div class="opts-sec-title">Your setup</div><div id="setupOpts"></div></div>
     <div class="opts-sec"><div class="opts-sec-title">Solar System</div><div class="opts-grid" id="solarOpts"></div></div>
     <div class="opts-sec"><div class="opts-sec-title">Deep Sky &amp; Constellations</div><div class="opts-grid" id="dsoOpts"></div></div>
   </div>
@@ -687,7 +762,7 @@ function sunEvents(jdMid,lat,lon){
 }
 function _sunEventsCalc(jdMid,lat,lon){
   const jdN=jdLocalNoon(jdMid,lon);
-  let dusk=null,dawn=null,sunset=null,sunrise=null;
+  let dusk=null,dawn=null,sunset=null,sunrise=null,nautDusk=null,nautDawn=null,astroDusk=null,astroDawn=null;
   const step=2/1440; // 2-min steps in JD
   // v10: -4h to +20h from local solar noon. v9 stopped at +18h (06:00 solar), so winter
   // civil dawn and sunrise were never found (Night view showed "—" roughly Oct–Feb).
@@ -699,8 +774,13 @@ function _sunEventsCalc(jdMid,lat,lon){
     if(a1>=-6&&a2<-6&&!dusk)  dusk   =jd+step*(a1+6)/(a1-a2);
     if(a1<-6&&a2>=-6&&!dawn)  dawn   =jd+step*(-6-a1)/(a2-a1);
     if(a1<0&&a2>=0&&!sunrise) sunrise=jd+step*(-a1)/(a2-a1);
+    // v15: nautical (−12°) and astronomical (−18°) twilight
+    if(a1>=-12&&a2<-12&&!nautDusk) nautDusk=jd+step*(a1+12)/(a1-a2);
+    if(a1<-12&&a2>=-12&&!nautDawn) nautDawn=jd+step*(-12-a1)/(a2-a1);
+    if(a1>=-18&&a2<-18&&!astroDusk) astroDusk=jd+step*(a1+18)/(a1-a2);
+    if(a1<-18&&a2>=-18&&!astroDawn) astroDawn=jd+step*(-18-a1)/(a2-a1);
   }
-  return{dusk,dawn,sunset,sunrise};
+  return{dusk,dawn,sunset,sunrise,nautDusk,nautDawn,astroDusk,astroDawn};
 }
 
 function riseSetTransit(getPos,lat,lon,jdMid){
@@ -1453,9 +1533,10 @@ function renderNight(){
     `Sunrise <span>${sun.sunrise?fmtTime(sun.sunrise):'—'}</span>`;
 
   const canvas=$nightCanvas;
-  const W=canvas.offsetWidth||900,H=420;
-  canvas.width=W;canvas.height=H;
-  const ctx=canvas.getContext('2d');
+  // v15: sharp on high-density screens; shorter chart on phones
+  const W=canvas.offsetWidth||900,H=window.innerWidth<700?340:420,dpr=Math.min(3,window.devicePixelRatio||1);
+  canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
   const P={t:28,r:16,b:46,l:50};
   const cW=W-P.l-P.r,cH=H-P.t-P.b;
   const tStart=duskJD-0.5/24,tEnd=Math.max(dawnJD,lateJD)+0.5/24,tR=tEnd-tStart;
@@ -1713,48 +1794,38 @@ const NIGHT_CURVES=[];
 let NIGHT_META=null;
 let nightHoverActive=false;
 
-(function setupNightHover(){
+// v15: one hover routine for mouse, pen and touch; coordinates in CSS pixels (HiDPI-safe)
+function nightHoverAt(e){
   const canvas=$nightCanvas;
-
-  canvas.addEventListener('mousemove',e=>{
-    if(!NIGHT_META||NIGHT_CURVES.length===0)return;
-    const rect=canvas.getBoundingClientRect();
-    // Scale mouse to canvas pixel coords
-    const scaleX=canvas.width/rect.width;
-    const mx=(e.clientX-rect.left)*scaleX;
-    const my=(e.clientY-rect.top)*(canvas.height/rect.height);
-    const {P,cW,cH,tStart,tR,lat,lon,tX,altY,jdN}=NIGHT_META;
-    // Only respond inside the plot area
-    if(mx<P.l||mx>P.l+cW||my<P.t||my>P.t+cH){hideNightTT();return;}
-    // Convert mouse x → JD
-    const hoverJD=tStart+((mx-P.l)/cW)*tR;
-    // Find nearest curve within vertical pixel threshold
-    const THRESH=22; // px
-    let best=null,bestDist=THRESH;
-    NIGHT_CURVES.forEach(curve=>{
-      // Find the two bracketing sample points
-      const pts=curve.pts;
-      for(let i=0;i<pts.length-1;i++){
-        if(pts[i].x<=mx&&pts[i+1].x>=mx){
-          const frac=(mx-pts[i].x)/(pts[i+1].x-pts[i].x);
-          const interpY=pts[i].y+frac*(pts[i+1].y-pts[i].y);
-          const interpAlt=pts[i].alt+frac*(pts[i+1].alt-pts[i].alt);
-          const interpAz=pts[i].az+frac*(pts[i+1].az-pts[i].az);
-          const dy=Math.abs(my-interpY);
-          if(dy<bestDist){bestDist=dy;best={curve,interpY,interpAlt,interpAz,hoverJD};}
-          break;
-        }
+  if(!NIGHT_META||NIGHT_CURVES.length===0)return;
+  const rect=canvas.getBoundingClientRect();
+  const mx=(e.clientX-rect.left)*(NIGHT_META.W/rect.width);
+  const my=(e.clientY-rect.top)*(NIGHT_META.H/rect.height);
+  const {P,cW,cH,tStart,tR}=NIGHT_META;
+  if(mx<P.l||mx>P.l+cW||my<P.t||my>P.t+cH){hideNightTT();return;}
+  const hoverJD=tStart+((mx-P.l)/cW)*tR;
+  const THRESH=e.pointerType&&e.pointerType!=='mouse'?36:22;   // fingers are less precise
+  let best=null,bestDist=THRESH;
+  NIGHT_CURVES.forEach(curve=>{
+    const pts=curve.pts;
+    for(let i=0;i<pts.length-1;i++){
+      if(pts[i].x<=mx&&pts[i+1].x>=mx){
+        const frac=(mx-pts[i].x)/(pts[i+1].x-pts[i].x);
+        const interpY=pts[i].y+frac*(pts[i+1].y-pts[i].y);
+        const interpAlt=pts[i].alt+frac*(pts[i+1].alt-pts[i].alt);
+        let dAz=pts[i+1].az-pts[i].az;if(dAz>180)dAz-=360;if(dAz<-180)dAz+=360;   // v15: wrap through north
+        const interpAz=mod360(pts[i].az+frac*dAz);
+        const dy=Math.abs(my-interpY);
+        if(dy<bestDist){bestDist=dy;best={curve,interpY,interpAlt,interpAz,hoverJD};}
+        break;
       }
-    });
-    if(best){
-      showNightTT(e,best);
-      nightHoverActive=true;
-    } else {
-      hideNightTT();
     }
   });
-
-  canvas.addEventListener('mouseleave',hideNightTT);
+  if(best){showNightTT(e,best);nightHoverActive=true;}else hideNightTT();
+}
+(function setupNightHover(){
+  $nightCanvas.addEventListener('mousemove',nightHoverAt);
+  $nightCanvas.addEventListener('mouseleave',hideNightTT);
 })();
 
 function showNightTT(e,{curve,interpAlt,interpAz,hoverJD}){
@@ -1779,6 +1850,7 @@ function showNightTT(e,{curve,interpAlt,interpAz,hoverJD}){
   } else if(obj.type==='dso'&&obj.desc){
     html+=`<div class="tt-row"><span class="tt-key">Type</span><span class="tt-val">${obj.desc}</span></div>`;
   }
+  if(obj.id==='jupiter')html+=jupiterDiagram(hoverJD,{W:230,H:64,compact:true});   // v15: live moon positions
   tt.innerHTML=html;
   // Position tooltip: prefer right of cursor, flip left if near edge
   const ttW=220,ttH=130;
@@ -1941,12 +2013,15 @@ function gotoNight() { closeDetail(); switchTab('night'); }
 function openOpts(){
   document.getElementById('solarOpts').innerHTML=OBJECTS.map(o=>`<label class="opt-item"><input type="checkbox" ${o.enabled?'checked':''} onchange="toggleObj('${o.id}',this.checked)"><span style="color:${o.color}">${o.name}</span></label>`).join('');
   document.getElementById('dsoOpts').innerHTML=DSO.map(o=>`<label class="opt-item"><input type="checkbox" ${o.enabled?'checked':''} onchange="toggleDSO('${o.id}',this.checked)"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${o.color||'#888'};margin-right:4px;vertical-align:middle"></span>${o.name}</label>`).join('');
+  renderSetupOpts();   // v15
   document.getElementById('optsOverlay').classList.add('open');
 }
 function closeOpts(e) {
   if (!e || e.target === document.getElementById('optsOverlay')) {
     document.getElementById('optsOverlay').classList.remove('open');
     renderYear();
+    // v15: equipment changes affect Tonight and Deep Sky too
+    const a=document.querySelector('.tab.active')?.id;if(a==='tab-tonight')renderTonight();else if(a==='tab-dso')renderDSOTab();
   }
 }
 function toggleEvtClass(cat, show) {
@@ -1969,7 +2044,8 @@ function switchTab(name){
   document.getElementById('tab-'+name).classList.add('active');
   document.getElementById('content-'+name).classList.add('active');
   if(name==='night'){if(!$nightDate.value)$nightDate.value=localISODate();renderNight();}
-  if(name==='jupiter'){JS.year=new Date().getFullYear();JS.month=new Date().getMonth();renderJupiter();}
+  if(name==='tonight'){renderTonight();}
+  if(name==='jupiter'){JS.year=new Date().getFullYear();JS.month=new Date().getMonth();JD_DIAG.iso=null;JD_DIAG.min=null;renderJupiter();}
   if(name==='saturn'){renderSaturn();}
   if(name==='dso'){renderDSOTab();}
 }
@@ -2016,7 +2092,8 @@ function applySettings(){
   renderYear();
   // v10: also refresh whichever other tab is open
   const active=document.querySelector('.tab.active')?.id?.replace('tab-','');
-  if(active==='night')renderNight();
+  if(active==='tonight')renderTonight();
+  else if(active==='night')renderNight();
   else if(active==='jupiter')renderJupiter();
   else if(active==='saturn')renderSaturn();
   else if(active==='dso')renderDSOTab();
@@ -2048,6 +2125,7 @@ function applyGRS(){
 }
 function resetGRS(){JS.grsOffset=0;renderJupiter();}
 function changeJupMonth(delta) {
+  JD_DIAG.iso=null;JD_DIAG.min=null;   // v15: diagram follows the month
   JS.month += delta;
   if (JS.month > 11) { JS.month = 0;  JS.year++; }
   if (JS.month < 0)  { JS.month = 11; JS.year--; }
@@ -2284,6 +2362,7 @@ function renderJupiter(){
   rows.forEach(r=>{html+=`<div class="jup-row" style="${COL}"><div class="jup-label"><div style="width:8px;height:8px;border-radius:50%;background:${MC[r]};margin-right:7px;flex-shrink:0"></div>${r}</div><div class="jup-track" id="jtrk-${r}" style="position:relative;height:36px">${colHighlights()}${wBg()}${tLine}</div></div>`;});
   html+=`</div><div class="jup-legend"><span style="color:var(--text3);font-size:10px">LEGEND:</span><span><span style="display:inline-block;width:12px;height:8px;background:rgba(200,210,255,0.95);border-radius:2px;vertical-align:middle"></span> Shadow ★</span><span><span style="display:inline-block;width:12px;height:8px;background:rgba(255,130,30,1);border-radius:2px;vertical-align:middle"></span> GRS ★</span><span><span style="display:inline-block;width:12px;height:8px;background:rgba(255,225,80,0.55);border-radius:2px;vertical-align:middle"></span> Transit (faint dot)</span><span><span style="display:inline-block;width:12px;height:8px;background:rgba(255,215,0,1);border:1px solid gold;border-radius:2px;vertical-align:middle"></span> ✦ Multi-event night</span><span style="color:var(--text3)">Bold date = worth observing · Blue=window · Right-click→night</span></div>`;
   document.getElementById('jupContent').innerHTML=html;
+  renderJupDiagramPanel();   // v15
   setTimeout(()=>{
     rows.forEach(r=>{
       const trk=document.getElementById('jtrk-'+r);if(!trk)return;
@@ -2328,6 +2407,7 @@ function renderJupiter(){
           tt.style.left=tx+'px';tt.style.top=ty+'px';tt.classList.add('visible');
         });
         bar.addEventListener('mouseleave',hideTT);
+        bar.addEventListener('click',()=>{hideTT();jupDiagSetJD(ev.mid);});   // v15
         bar.addEventListener('contextmenu',e=>{
           e.preventDefault();hideTT();
           const mDt=dateOfJD(ev.mid),nDt=new Date(mDt);
@@ -3047,7 +3127,7 @@ function renderDSOTab(){
   const todayF=(todayJD-startJD)/diy;
 
   function nightPeakAlt(dso,jdMid){
-    const win=nightWindow(jdMid);
+    const win=darkWindow(jdMid);   // v15: astronomical darkness, not civil twilight
     let max=-99;
     const pd=dsoRaDec(dso,jdMid);   // v13: precessed to date
     for(let jd2=win.d;jd2<=win.e;jd2+=0.5/24){
@@ -3058,23 +3138,33 @@ function renderDSOTab(){
   }
 
   const samples=[];
-  for(let d=0;d<diy;d+=7){
+  // v15: every 2 days (weekly sampling aliased the 29.5-day Moon cycle) + moonlight per night
+  for(let d=0;d<diy;d+=2){
     const jd=startJD+d,frac=d/diy;
     const peakAlts={};
     DSO_CATALOG.forEach(dso=>{peakAlts[dso.id]=nightPeakAlt(dso,jd);});
-    samples.push({jd,frac,peakAlts});
+    samples.push({jd,frac,peakAlts,moon:nightMoonlight(jd)});
+  }
+  function moonBar(){
+    const W=800,H=30;let r='';
+    samples.forEach((s,i)=>{const next=samples[i+1];const x=s.frac*W,w=next?(next.frac-s.frac)*W+0.5:5;
+      const h=Math.max(0,s.moon.frac)*24;if(h<0.5)return;
+      r+=`<rect x="${x.toFixed(1)}" y="${(H-3-h).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#d4c9a8" opacity="${(0.25+0.6*s.moon.frac).toFixed(2)}"/>`;});
+    return `<svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:${H}px;display:block;position:absolute;inset:0">${r}</svg>`;
   }
 
   function visBar(dso){
     const W=800,H=52,tc=DSO_TYPE[dso.type]?.color||'#888';
     let rects='';
+    const sens=moonSensitivity(dso);   // v15
     samples.forEach((s,i)=>{
       const alt2=s.peakAlts[dso.id],next=samples[i+1];
+      const mf=1-sens*(s.moon?s.moon.frac:0);
       if(alt2<10)return;
       const x=(s.frac*W).toFixed(1),w=next?((next.frac-s.frac)*W+1).toFixed(1):'10';
       const norm=Math.max(0,Math.min(1,(alt2-10)/60));
       const barH=(6+norm*32).toFixed(1),barY=((H-parseFloat(barH))/2).toFixed(1);
-      rects+=`<rect x="${x}" y="${barY}" width="${w}" height="${barH}" fill="${tc}" opacity="${(0.25+norm*0.6).toFixed(2)}" rx="1"/>`;
+      rects+=`<rect x="${x}" y="${barY}" width="${w}" height="${barH}" fill="${tc}" opacity="${(0.08+(0.17+norm*0.6)*mf).toFixed(2)}" rx="1"/>`;
     });
     return `<svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:${H}px;display:block;position:absolute;inset:0">${rects}</svg>`;
   }
@@ -3099,7 +3189,7 @@ function renderDSOTab(){
     return `<div style="position:absolute;left:${(f*100).toFixed(1)}%;transform:translateX(-50%);font-size:9px;color:var(--text3);font-family:var(--mono)">${mn}</div><div style="position:absolute;left:${(f*100).toFixed(1)}%;top:0;bottom:0;width:1px;background:rgba(100,130,200,0.12)"></div>`;
   }).join('');
 
-  let rows='';
+  let rows=`<div class="dso-row dso-moon-row" style="min-height:30px"><div class="dso-info"><div class="dso-meta"><div class="dso-name" style="color:#d4c9a8">☾ Moonlight</div><div class="dso-common">taller = brighter sky in the dark hours</div></div></div><div class="dso-track" id="dso-track-moon" style="height:30px">${moonBar()}${overlay()}</div></div>`;
   groups.forEach(g=>{
     rows+=`<div class="dso-section-label">${g.label}</div>`;
     g.ids.forEach(id=>{
@@ -3112,7 +3202,7 @@ function renderDSOTab(){
             <div class="dso-name" title="${dso.name}${dso.common?' · '+dso.common:''}">${dso.name}${dso.common?' · '+dso.common:''}</div>
             <div class="dso-attrs">
               <span class="dso-type-badge" style="background:${tc}22;color:${tc};border:1px solid ${tc}44">${DSO_TYPE[dso.type]?.label}</span>
-              <span>m${dso.mag}</span><span>${dso.con}</span>
+              ${reachBadge(dso)}<span>m${dso.mag}</span>
             </div>
           </div>
         </div>
@@ -3128,7 +3218,7 @@ function renderDSOTab(){
         <span class="year-label" style="min-width:52px;text-align:center">${yr}</span>
         <button class="nav-btn" onclick="ST.year++;renderDSOTab()">›</button>
       </div>
-      <div class="info-bar"><span style="color:var(--gold)">ℹ</span> Bar height = peak altitude · Hover for Bortle sky condition notes · Click object for detail</div>
+      <div class="info-bar"><span style="color:var(--gold)">ℹ</span> Bar height = peak altitude in full darkness · Dimmed = moonlit · <span class="hint-mouse">Hover</span><span class="hint-touch">Tap</span> for sky notes · Click object for detail</div>
     </div>
     ${bortleStrip()}
     <div class="dso-grid">
@@ -3142,7 +3232,7 @@ function renderDSOTab(){
       <strong style="color:var(--text)">Bar height = altitude (taller = higher in sky)</strong>
       <span style="color:#8db4e0">■ Open cluster</span><span style="color:#e0c87a">■ Globular</span>
       <span style="color:#e07a9a">■ Emission nebula</span><span style="color:#7ae0c8">■ Planetary nebula</span>
-      <span style="color:#b07ae0">■ Galaxy</span><span style="color:#f0a070">■ Supernova remnant</span><span style="color:rgba(232,184,75,0.7)">│ Today</span>
+      <span style="color:#b07ae0">■ Galaxy</span><span style="color:#f0a070">■ Supernova remnant</span><span style="color:#d4c9a8">▆ Moonlight (bars dim on moonlit nights)</span><span style="color:rgba(232,184,75,0.7)">│ Today</span>
     </div>`;
 
   const tt=$tooltip;
@@ -3163,12 +3253,10 @@ function renderDSOTab(){
       tt.innerHTML=`<div class="tt-title" style="color:${tc}">${dso.name}${dso.common?' — '+dso.common:''}</div>
         <div class="tt-row"><span class="tt-key">${date}</span><span class="tt-val">${altStr}</span></div>
         ${dso.filter&&dso.filter.rec!=='none'?`<div class="tt-row"><span class="tt-key">Best filter</span><span class="tt-val" style="color:#7ae0c8">${dso.filter.rec}${dso.filter.alt?' / '+dso.filter.alt:''}</span></div>`:''}
-        <div style="margin-top:6px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600">Urban/Suburban (Bortle 7–9)</div>
-        <div style="font-size:10px;color:var(--text2);line-height:1.5;margin-top:2px">${dso.bortle.urban}</div>
-        <div style="margin-top:5px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600">Suburban/Rural (Bortle 4–6)</div>
-        <div style="font-size:10px;color:var(--text2);line-height:1.5;margin-top:2px">${dso.bortle.suburban}</div>
-        <div style="margin-top:5px;font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600">Dark Skies (Bortle 1–3)</div>
-        <div style="font-size:10px;color:var(--text2);line-height:1.5;margin-top:2px">${dso.bortle.rural}</div>`;
+        ${(()=>{const m=(s0.moon&&s1.moon)?(t<0.5?s0.moon:s1.moon):null;if(!m)return'';const q=1-moonSensitivity(dso)*m.frac;
+          return `<div class="tt-row"><span class="tt-key">Moonlight</span><span class="tt-val" style="color:${q>0.75?'#6c6':q>0.45?'#e8a050':'#c66'}">${m.frac<0.05?'dark, moon-free':`Moon ${Math.round(m.illum*100)}% lit, up ${Math.round(m.upFrac*100)}% of dark hours`}</span></div>`;})()}
+        <div class="tt-row"><span class="tt-key">Your setup</span><span class="tt-val">${reachBadge(dso)}</span></div>
+        ${tierNotes(dso,'tt')}`;
       tt.style.width='280px';
       tt.style.left=Math.min(e.clientX+14,window.innerWidth-300)+'px';
       tt.style.top=Math.max(8,e.clientY-180)+'px';
@@ -3179,6 +3267,13 @@ function renderDSOTab(){
   });
 }
 
+// v15: the three sky-condition notes, with the user's own sky highlighted
+function tierNotes(dso,mode){
+  const you=bortleTier(),big=mode==='panel';
+  return ['urban','suburban','rural'].map(k=>`<div class="${k===you?'':'tier-dim'}" style="${big?'margin-bottom:10px':''}">
+    <div class="tier-h" style="${big?'font-size:10px;text-transform:uppercase':''}">${TIER_LABEL[k]}${k===you?'<span class="tier-you">◀ your sky</span>':''}</div>
+    <div class="tier-t" style="${big?'font-size:11px;line-height:1.6':''}">${dso.bortle[k]}</div></div>`).join('');
+}
 function showDSODetail(id){
   const dso=DSO_CATALOG.find(d=>d.id===id);if(!dso)return;
   const tc=DSO_TYPE[dso.type]?.color||'#888';
@@ -3204,14 +3299,423 @@ function showDSODetail(id){
       </div>
     </div>
     ${fi&&fi.note?`<div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:12px;padding:8px 10px;background:var(--bg3);border-radius:4px;border-left:2px solid #7ae0c8">${fi.note}</div>`:''}
-    <div style="font-size:10px;font-family:var(--mono);color:var(--text3);font-weight:600;margin-bottom:4px">URBAN/SUBURBAN (Bortle 7–9)</div>
-    <div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:10px">${dso.bortle.urban}</div>
-    <div style="font-size:10px;font-family:var(--mono);color:var(--text3);font-weight:600;margin-bottom:4px">SUBURBAN/RURAL (Bortle 4–6)</div>
-    <div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:10px">${dso.bortle.suburban}</div>
-    <div style="font-size:10px;font-family:var(--mono);color:var(--text3);font-weight:600;margin-bottom:4px">DARK SKIES (Bortle 1–3)</div>
-    <div style="font-size:11px;color:var(--text2);line-height:1.6">${dso.bortle.rural}</div>`;
+    <div class="tt-row" style="font-size:11px;margin-bottom:8px"><span class="tt-key">With your setup</span><span class="tt-val">${reachBadge(dso)} <span style="color:var(--text3)">${equipLabel()}</span></span></div>
+    ${tierNotes(dso,'panel')}`;
   document.getElementById('detailPanel').classList.add('open');
 }
+
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  v15 FEATURES                                                             ║
+// ║  Tonight tab · moonlight on deep-sky bars · equipment profile · live      ║
+// ║  Jupiter moon diagram · red night mode · touch support · HiDPI chart      ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+
+// ── Per-viewer settings (localStorage; silently ignored where unavailable) ──
+const LS={
+  get(k,d){try{const v=localStorage.getItem('skywatcher.'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem('skywatcher.'+k,JSON.stringify(v));}catch(e){}}
+};
+
+// ── Equipment profile ───────────────────────────────────────────────────────
+const APERTURES=[[0,'Naked eye'],[50,'Binoculars (50mm)'],[80,'80mm'],[100,'100mm'],[130,'130mm'],[150,'150mm'],[200,'200mm'],[250,'250mm'],[300,'300mm+']];
+const BORTLE_DESC={1:'Excellent dark site',2:'Truly dark',3:'Rural',4:'Rural/suburban transition',5:'Suburban',6:'Bright suburban',7:'Suburban/urban transition',8:'City',9:'Inner city'};
+const EQUIP=Object.assign({aperture:100,bortle:6,filter:false},LS.get('equip',{}));
+function equipLabel(){const a=APERTURES.find(x=>x[0]===EQUIP.aperture);return `${a?a[1]:EQUIP.aperture+'mm'} · Bortle ${EQUIP.bortle}${EQUIP.filter?' · nebula filter':''}`;}
+function bortleTier(b=EQUIP.bortle){return b<=3?'rural':b<=6?'suburban':'urban';}   // keys of dso.bortle
+const TIER_LABEL={urban:'Urban/Suburban (Bortle 7–9)',suburban:'Suburban/Rural (Bortle 4–6)',rural:'Dark Skies (Bortle 1–3)'};
+
+// Rough "can I see it?" guide from magnitude, size, aperture, sky and filter. Calibrated
+// against the catalog's own sky-condition notes for a 100mm scope (Bortle 2/5/8).
+const _NEEDS_FILTER=new Set(['ngc6888','ngc7000','ngc6960']),_LOW_SB=new Set(['ngc7000']);
+const REACH_LEVELS=[{lvl:0,label:'Beyond reach',color:'#c66'},{lvl:1,label:'Challenging',color:'#e8a050'},{lvl:2,label:'Good',color:'#9d8'},{lvl:3,label:'Easy',color:'#6db'}];
+function dsoReach(dso,eq=EQUIP){
+  const D=eq.aperture||0,b=eq.bortle;
+  const NELM={1:7.6,2:7.1,3:6.6,4:6.3,5:5.9,6:5.5,7:5.0,8:4.5,9:4.0}[b];
+  const tlm=NELM+5*Math.log10(Math.max(7,D)/7);
+  const sizeK=D<=7?1.0:D<=60?1.5:2.0;    // low magnification shows large objects better
+  let meff;
+  if(dso.type==='open') meff=dso.mag+0.6*Math.log10(Math.max(1,dso.size));
+  else{
+    const s=dso.type==='galaxy'?dso.size*0.3:dso.type==='globular'?dso.size*0.5:dso.id==='ngc6960'?30:Math.min(dso.size,60);
+    meff=dso.mag+sizeK*Math.log10(Math.max(1,s));
+    if(_LOW_SB.has(dso.id))meff+=1.0;
+    if(dso.type==='galaxy'||(dso.type==='planetary'&&dso.size>5))meff+=0.1*(b-1);
+  }
+  const filt=dso.filter&&dso.filter.rec!=='none'&&!['galaxy','open','globular'].includes(dso.type);
+  if(filt&&eq.filter)meff-=0.5+0.15*(b-1);
+  else if(_NEEDS_FILTER.has(dso.id))meff+=1.0+0.25*(b-1);
+  const m=tlm-meff;
+  return Object.assign({margin:m},REACH_LEVELS[m>=2.5?3:m>=1.0?2:m>=0?1:0]);
+}
+function reachBadge(dso){const r=dsoReach(dso);return `<span class="reach-badge" style="color:${r.color};border-color:${r.color}55" title="Rough guide for ${equipLabel()}">${r.label}</span>`;}
+
+// ── Darkness and moonlight ──────────────────────────────────────────────────
+// Astronomical darkness (Sun below −18°), to the late-night cutoff. Falls back to
+// nautical/civil twilight where the Sun never gets that low (high-latitude summer).
+function darkWindow(jdMid){
+  const sv=sunEvents(jdMid,ST.lat,ST.lon),jN=jdLocalNoon(jdMid,ST.lon),late=lateCutoffJD(jdMid);
+  const d=sv.astroDusk||sv.nautDusk||sv.dusk||(jN+8/24);
+  const e=Math.min(sv.astroDawn||sv.nautDawn||sv.dawn||(jN+18/24),late);
+  return{d,e,astro:!!sv.astroDusk};
+}
+const _moonCache=new Map();
+// Mean moonlight over the dark window: 0 = Moon down all night, 1 = full Moon up all night
+function nightMoonlight(jdMid){
+  const k=jdMid+','+ST.lat+','+ST.lon+','+ST.lateH;
+  if(_moonCache.has(k))return _moonCache.get(k);
+  const w=darkWindow(jdMid);let sum=0,n=0,upN=0;
+  const illum=moonPhase((w.d+w.e)/2).illum/100;
+  for(let jd=w.d;jd<=w.e;jd+=1/72){const m=moonPosTopo(jd);const up=altAz(m.ra,m.dec,ST.lat,ST.lon,jd).alt>0;sum+=up?illum:0;upN+=up?1:0;n++;}
+  const r={frac:n?sum/n:0,upFrac:n?upN/n:0,illum};
+  if(_moonCache.size>3000)_moonCache.clear();_moonCache.set(k,r);return r;
+}
+// How strongly moonlight hurts each kind of object (0 = not at all, 1 = fully)
+function moonSensitivity(dso){
+  if(dso.type==='open')return 0.3;
+  if(dso.type==='globular')return 0.5;
+  if(dso.type==='planetary')return dso.size>5?0.8:0.4;
+  return 0.85;   // galaxies, emission nebulae, supernova remnants
+}
+
+// ── "Tonight" for a given local calendar date ───────────────────────────────
+// Before noon, "tonight" means the night already in progress (it started yesterday).
+function tonightISO(){const d=new Date();if(d.getHours()<12)d.setDate(d.getDate()-1);return localISODate(d);}
+function jdMidOfISO(iso){const[y,m,d]=iso.split('-').map(Number);return jdn(y,m,d);}
+function nightConditions(jdMid){
+  const sv=sunEvents(jdMid,ST.lat,ST.lon),win=nightWindow(jdMid),dk=darkWindow(jdMid),late=lateCutoffJD(jdMid);
+  const t0=sv.sunset||win.d-1/24,t1=sv.sunrise||(sv.dawn||win.e)+0.5/24;
+  const STEP=1/288,samples=[];   // 5 min
+  for(let jd=t0;jd<=t1;jd+=STEP){
+    const s=sunPos(jd),sa=altAz(s.ra,s.dec,ST.lat,ST.lon,jd).alt;
+    const m=moonPosTopo(jd),ma=altAz(m.ra,m.dec,ST.lat,ST.lon,jd).alt;
+    samples.push({jd,sunAlt:sa,moonAlt:ma});
+  }
+  const illum=moonPhase((dk.d+dk.e)/2).illum;
+  const moonBright=illum>=15;   // a thin crescent barely affects the sky
+  let darkH=0,freeH=0,segs=[],cur=null;
+  samples.forEach(p=>{
+    const inWin=p.jd>=dk.d&&p.jd<=dk.e&&p.sunAlt<-18;
+    if(inWin)darkH+=STEP*24;
+    const free=inWin&&(p.moonAlt<0||!moonBright);
+    // boundaries at the midpoint between samples (±2.5 min), clipped to the dark window
+    if(free){freeH+=STEP*24;if(!cur)cur=[Math.max(dk.d,p.jd-STEP/2),p.jd];cur[1]=Math.min(dk.e,p.jd+STEP/2);}
+    else if(cur){segs.push(cur);cur=null;}
+  });
+  if(cur)segs.push(cur);
+  // moon rise/set within the night
+  let mrise=null,mset=null;
+  for(let i=1;i<samples.length;i++){const a=samples[i-1],b=samples[i];
+    if(a.moonAlt<0&&b.moonAlt>=0&&!mrise)mrise=a.jd+STEP*(-a.moonAlt)/(b.moonAlt-a.moonAlt);
+    if(a.moonAlt>=0&&b.moonAlt<0&&!mset)mset=a.jd+STEP*a.moonAlt/(a.moonAlt-b.moonAlt);}
+  return{sv,win,dk,late,t0,t1,samples,illum,phase:moonPhase((dk.d+dk.e)/2),darkH,freeH,freeSegs:segs,mrise,mset,
+    moonUpStart:samples[0]&&samples[0].moonAlt>0};
+}
+
+// Jupiter moon/GRS events during one night's observing window (Jupiter above 10°)
+function jupiterEventsNight(jdMid){
+  const w=nightWindow(jdMid),s=jupShadowPhase((w.d+w.e)/2),out=[];
+  const st={};const STEP=2/1440;
+  const jupAltAt=jd=>{const p=planetPos(jd,'Jupiter');return altAz(p.ra,p.dec,ST.lat,ST.lon,jd).alt;};
+  for(let jd=w.d-3/24;jd<=w.e+3/24;jd+=STEP){
+    const ms=galileanMoons(jd),flags={};
+    ms.forEach(m=>{flags[m.name+' transit']=isOnDisk(m.x,m.y,m.z);
+      const sx=m.x-s*m.z;flags[m.name+' shadow']=m.z<0&&(sx*sx+(m.y/0.935)**2)<1;});
+    flags['Great Red Spot']=Math.abs(mod360(sysII(jd)-grsLonAt(jd)+180)-180)<35;
+    for(const k in flags){
+      if(flags[k]&&!st[k])st[k]=jd;
+      if(!flags[k]&&st[k]){out.push({what:k,start:st[k],end:jd});delete st[k];}
+    }
+  }
+  for(const k in st)out.push({what:k,start:st[k],end:w.e+3/24});
+  return out.filter(e=>e.end>w.d&&e.start<w.e).map(e=>{
+    const mid=Math.min(Math.max((e.start+e.end)/2,w.d),w.e);
+    return Object.assign(e,{mid,alt:jupAltAt(mid),kind:e.what.includes('shadow')?'shadow':e.what.includes('transit')?'transit':'grs'});
+  }).filter(e=>e.alt>10).sort((a,b)=>a.start-b.start);
+}
+
+// ── TONIGHT TAB ─────────────────────────────────────────────────────────────
+const TN={date:null};
+function changeTonight(delta){
+  const d=new Date((TN.date||tonightISO())+'T12:00:00');d.setDate(d.getDate()+delta);TN.date=localISODate(d);renderTonight();
+}
+function tonightTimeline(c){
+  const W=Math.max(320,Math.round(document.getElementById('tonightContent')?.clientWidth||1000)-30),H=56,x=jd=>((jd-c.t0)/(c.t1-c.t0))*W;
+  const every=W<600?2:1;
+  let r='';
+  // sky darkness: sun altitude → shade
+  c.samples.forEach((p,i)=>{if(i===c.samples.length-1)return;
+    const sa=p.sunAlt,shade=sa>-0.8?'#3a4a6a':sa>-6?'#26324e':sa>-12?'#18213a':sa>-18?'#111a2e':'#070b15';
+    r+=`<rect x="${x(p.jd).toFixed(1)}" y="8" width="${(x(c.samples[i+1].jd)-x(p.jd)+0.6).toFixed(1)}" height="30" fill="${shade}"/>`;
+    if(p.moonAlt>0)r+=`<rect x="${x(p.jd).toFixed(1)}" y="8" width="${(x(c.samples[i+1].jd)-x(p.jd)+0.6).toFixed(1)}" height="30" fill="rgba(232,214,160,${(0.08+0.32*c.illum/100).toFixed(2)})"/>`;
+  });
+  c.freeSegs.forEach(([a,b])=>{r+=`<rect x="${x(a).toFixed(1)}" y="38" width="${(x(b)-x(a)).toFixed(1)}" height="3" fill="#6db"/>`;});
+  // hour ticks (clock time)
+  const t=dateOfJD(c.t0);t.setMinutes(0,0,0);
+  for(let ms=t.getTime()+3600000;;ms+=3600000){const dt=new Date(ms),jd=jdOfDate(dt);if(jd>c.t1)break;const X=x(jd);if(dt.getHours()%every)continue;
+    r+=`<line x1="${X.toFixed(1)}" y1="38" x2="${X.toFixed(1)}" y2="44" stroke="rgba(120,160,210,.5)"/><text x="${X.toFixed(1)}" y="54" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="Space Mono,monospace">${String(dt.getHours()).padStart(2,'0')}</text>`;}
+  const mark=(jd,col,lbl)=>{if(!jd||jd<c.t0||jd>c.t1)return'';const X=x(jd);return `<line x1="${X.toFixed(1)}" y1="4" x2="${X.toFixed(1)}" y2="40" stroke="${col}" stroke-width="1.5" stroke-dasharray="3 2"/><text x="${(X+3).toFixed(1)}" y="6" font-size="9" fill="${col}" font-family="Space Mono,monospace" dominant-baseline="hanging">${lbl}</text>`;};
+  r+=mark(c.late,'rgba(220,110,110,.9)','cutoff');
+  const now=jdOfDate(new Date());r+=mark(now,'rgba(232,184,75,.95)','now');
+  return `<svg class="tn-timeline" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="width:100%;height:auto">${r}</svg>`;
+}
+function renderTonight(){
+  if(!TN.date)TN.date=tonightISO();
+  const jdMid=jdMidOfISO(TN.date),c=nightConditions(jdMid);
+  const dt=new Date(TN.date+'T12:00:00');
+  const dateLbl=dt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('tnDate').textContent=(TN.date===tonightISO()?'Tonight · ':'')+dateLbl;
+  document.getElementById('tnEquip').textContent=equipLabel();
+  const loc=ST.zip?`ZIP ${ST.zip}`:`${ST.lat.toFixed(2)}, ${ST.lon.toFixed(2)}`;
+  const f=fmtTime;
+  // ── Planets up in the observing window
+  const planets=[];
+  for(const o of OBJECTS){
+    const get=getPosFunc(o);let best=null,first=null,last=null;
+    for(let jd=c.win.d;jd<=c.win.e;jd+=1/96){const p=get(jd);const a=altAz(p.ra,p.dec,ST.lat,ST.lon,jd);
+      const minA=(a.az>45&&a.az<135)?ST.eH:(a.az>225&&a.az<315)?ST.wH:0;
+      if(a.alt>Math.max(10,minA)){if(!first)first=jd;last=jd;if(!best||a.alt>best.alt)best={jd,alt:a.alt,az:a.az};}}
+    if(best&&(last-first)*1440>=20)planets.push({o,best,first,last});   // ignore brief grazes
+  }
+  // ── Jupiter events
+  const jupUp=planets.some(p=>p.o.id==='jupiter');
+  const jev=jupUp?jupiterEventsNight(jdMid):[];
+  // ── Deep sky picks
+  const dk=c.dk,picks=[];
+  if(dk.e>dk.d){
+    for(const d of DSO_CATALOG){
+      const r=dsoReach(d);if(r.lvl===0)continue;
+      let best=null,hrs=0,moonSum=0,moonN=0;
+      for(let jd=dk.d;jd<=dk.e;jd+=1/96){const p=dsoRaDec(d,jd),a=altAz(p.ra,p.dec,ST.lat,ST.lon,jd).alt;
+        if(!best||a>best.alt)best={jd,alt:a};
+        if(a>30){hrs+=0.25;const m=moonPosTopo(jd);moonSum+=altAz(m.ra,m.dec,ST.lat,ST.lon,jd).alt>0?c.illum/100:0;moonN++;}}
+      if(!best||best.alt<20)continue;
+      const moonFrac=moonN?moonSum/moonN:0,moonW=1-moonSensitivity(d)*moonFrac;
+      const altW=Math.min(1,Math.max(0,(best.alt-20)/45));
+      const score=[0,0.45,0.8,1][r.lvl]*altW*moonW*(0.6+0.4*Math.min(1,hrs/2));
+      picks.push({d,r,best,hrs,moonW,score});
+    }
+    picks.sort((a,b)=>b.score-a.score);
+  }
+  // ── Verdict
+  const segTxt=c.freeSegs.length?c.freeSegs.map(([a,b])=>`${f(a)}–${f(b)}`).join(', '):'';
+  let vClass,vHead,vSub;
+  if(c.darkH<0.5){vClass='poor';vHead='No real darkness before your cutoff';vSub=`The sky never gets astronomically dark before ${document.getElementById('lateNight').value}. Planets and the Moon are still fine.`;}
+  else if(c.freeH>=2){vClass='good';vHead=`Good deep-sky night — ${c.freeH.toFixed(1)} h of moon-free darkness`;vSub=`Dark and moon-free ${segTxt}.`;}
+  else if(c.freeH>=0.75){vClass='fair';vHead=`Partly dark — ${c.freeH.toFixed(1)} h moon-free`;vSub=`Moon-free darkness ${segTxt}; the ${c.illum}%-lit Moon brightens the sky the rest of the night.`;}
+  else{vClass='moon';vHead=`Moonlit night — ${c.phase.icon} ${c.illum}% Moon`;vSub='Best for the Moon, planets, star clusters and bright nebulae. Faint galaxies will be washed out.';}
+  const pl=planets.filter(p=>p.o.type==='planet').map(p=>p.o.name);
+  if(pl.length)vSub+=` Planets up: ${pl.join(', ')}.`;
+  // ── HTML
+  const planetRows=planets.map(p=>{
+    const o=p.o;let note='';
+    if(o.id==='moon')note=`${c.phase.icon} ${c.phase.phase}, ${c.illum}% lit`;
+    if(o.id==='saturn')note=`rings tilted ${Math.abs(saturnRingTilt(p.best.jd)).toFixed(1)}°`;
+    if(o.id==='jupiter')note=jev.length?`${jev.length} moon/GRS event${jev.length>1?'s':''} tonight`:'no moon events in your window';
+    return `<div class="tn-row" onclick="openDetail('${o.id}')"><span class="obj-dot" style="background:${o.color}"></span><b>${o.name}</b>
+      <span class="tn-muted">up ${f(p.first)}–${f(p.last)} · best ${f(p.best.jd)} at ${Math.round(p.best.alt)}°</span>${note?`<span class="tn-note">${note}</span>`:''}</div>`;
+  }).join('')||'<div class="tn-muted" style="padding:8px 0">No planets above 10° in your observing window.</div>';
+  const EVC={shadow:'#c8d2ff',transit:'#e8d890',grs:'#ff9944'};
+  const jevRows=jev.map(e=>`<div class="tn-row" onclick="TN_jump(${e.mid})"><span class="tn-chip" style="background:${EVC[e.kind]}22;color:${EVC[e.kind]};border-color:${EVC[e.kind]}55">${e.kind==='grs'?'GRS':e.kind}</span>
+      <b>${e.what}</b><span class="tn-muted">${e.start<c.win.d?'in progress at dusk, ends ':f(e.start)+'–'}${f(e.end)}${e.end>c.win.e?' (ends after your cutoff)':''} · Jupiter at ${Math.round(e.alt)}°</span></div>`).join('');
+  const sky=bortleTier();
+  const pickCards=picks.slice(0,6).map(p=>{
+    const d=p.d,tc=DSO_TYPE[d.type]?.color||'#888';
+    const fl=d.filter&&d.filter.rec!=='none'?`<span style="color:#7ae0c8">${EQUIP.filter?'Use '+d.filter.rec:d.filter.rec+' filter helps'}</span>`:'';
+    return `<div class="tn-pick" onclick="showDSODetail('${d.id}')">
+      <div class="tn-pick-art">${dsoArt(d,64)}</div>
+      <div class="tn-pick-body">
+        <div class="tn-pick-name">${d.name}${d.common?' · '+d.common:''}</div>
+        <div class="tn-pick-meta">${reachBadge(d)}<span style="color:${tc}">${DSO_TYPE[d.type].label}</span><span>best ${f(p.best.jd)} at ${Math.round(p.best.alt)}°</span></div>
+        <div class="tn-pick-text">${d.bortle[sky]}</div>
+        <div class="tn-pick-meta">${fl}${p.moonW<0.7?`${fl?' · ':''}<span style="color:#e8a050">Moonlight hurts this one tonight</span>`:''}</div>
+      </div></div>`;}).join('');
+  const more=picks.slice(6,14).map(p=>`<span class="tn-more" onclick="showDSODetail('${p.d.id}')">${p.d.name}${p.d.common?' '+p.d.common:''}</span>`).join('');
+  document.getElementById('tonightContent').innerHTML=`
+    <div class="tn-verdict tn-${vClass}"><div class="tn-vhead">${vHead}</div><div class="tn-vsub">${vSub}</div></div>
+    <div class="tn-card">
+      <div class="tn-card-title">The night at ${loc}</div>
+      ${tonightTimeline(c)}
+      <div class="tn-legend">
+        <span>Sunset <b>${c.sv.sunset?f(c.sv.sunset):'—'}</b></span><span>Dark <b>${c.sv.astroDusk?f(c.sv.astroDusk):'—'}</b>–<b>${c.sv.astroDawn?f(c.sv.astroDawn):'—'}</b></span>
+        <span>Moon ${c.phase.icon} <b>${c.illum}%</b> · ${c.mrise?'rises '+f(c.mrise):''}${c.mrise&&c.mset?' · ':''}${c.mset?'sets '+f(c.mset):''}${!c.mrise&&!c.mset?(c.moonUpStart?'up all night':'down all night'):''}</span>
+        <span><span class="sw" style="background:#6db"></span>moon-free dark</span><span><span class="sw" style="background:rgba(232,214,160,.45)"></span>Moon up</span>
+      </div>
+    </div>
+    <div class="tn-grid">
+      <div class="tn-card"><div class="tn-card-title">Moon &amp; planets</div>${planetRows}</div>
+      ${jupUp?`<div class="tn-card"><div class="tn-card-title">Jupiter's moons tonight</div>${jevRows||'<div class="tn-muted" style="padding:6px 0">No shadow transits, moon transits or GRS crossings while Jupiter is up in your window.</div>'}
+        <div id="tnJupDiagram" style="margin-top:10px"></div></div>`:''}
+    </div>
+    <div class="tn-card">
+      <div class="tn-card-title">Best deep-sky targets for ${equipLabel()} <span class="tn-edit" onclick="openOpts()">change</span></div>
+      ${dk.e<=dk.d?'<div class="tn-muted">No dark time before your cutoff.</div>':pickCards?`<div class="tn-picks">${pickCards}</div>${more?`<div class="tn-muted" style="margin-top:10px">Also well placed: ${more}</div>`:''}`:'<div class="tn-muted">Nothing in the catalog is well placed and within reach tonight.</div>'}
+      <div class="tn-foot">Ranked by altitude in the dark window, moonlight and a rough visibility guide for your setup${dk.astro?'':' · no astronomical darkness tonight, using twilight limits'}.</div>
+    </div>`;
+  if(jupUp){
+    const jp=planets.find(p=>p.o.id==='jupiter');
+    const t=jev.length?jev[0].mid:jp.best.jd;
+    document.getElementById('tnJupDiagram').innerHTML=jupiterDiagram(t,{W:560,H:120})+`<div class="tn-muted" style="font-size:10px;margin-top:2px">${f(t)} · tap an event to show it · open the Jupiter tab to scrub through the night</div>`;
+  }
+}
+function TN_jump(jd){const el=document.getElementById('tnJupDiagram');if(el)el.innerHTML=jupiterDiagram(jd,{W:560,H:120})+`<div class="tn-muted" style="font-size:10px;margin-top:2px">${fmtTime(jd)}</div>`;}
+
+// ── LIVE JUPITER MOON DIAGRAM ───────────────────────────────────────────────
+// x + west, y + north (Jupiter radii). Orientation: 'sky' = N up, E left (eye/binoculars);
+// 'newt' = rotated 180° (Newtonian/Dobsonian); 'diag' = mirrored E–W (refractor/SCT + diagonal).
+const JD_DIAG={iso:null,min:null,orient:LS.get('jupOrient','sky')};
+function jupiterState(jd){
+  const s=jupShadowPhase(jd),ms=galileanMoons(jd);
+  return ms.map(m=>{
+    const sx=m.x-s*m.z,sunHidden=(sx*sx+(m.y/0.935)**2)<1;
+    const onDisk=(m.x*m.x+(m.y/0.935)**2)<1;
+    return Object.assign({},m,{sx,transit:m.z<0&&onDisk,occulted:m.z>0&&onDisk,shadow:m.z<0&&sunHidden,eclipsed:m.z>0&&sunHidden&&!onDisk});
+  });
+}
+function jupiterDiagram(jd,{W=640,H=140,orient=JD_DIAG.orient,compact=false}={}){
+  if(!compact&&W>=500&&window.innerWidth<600){W=380;H=150;}   // phones: draw at a size that stays readable
+  const st=jupiterState(jd);
+  const span=Math.max(9,...st.map(m=>Math.abs(m.x)))+2.2;
+  const k=(W/2-14)/span,fx=orient==='sky'?1:-1,fy=orient==='newt'?-1:1;
+  const cx=W/2,cy=H/2,X=x=>cx+fx*x*k,Y=y=>cy-fy*y*k;
+  const disk=(ox,oy,R,detail)=>{
+    let g=`<ellipse cx="${ox}" cy="${oy}" rx="${R}" ry="${(R*0.935).toFixed(2)}" fill="#d9c4a0"/>`;
+    if(detail){[[0.28,0.13],[-0.22,0.12]].forEach(([b,w])=>{g+=`<ellipse cx="${ox}" cy="${(oy-fy*b*R).toFixed(2)}" rx="${(R*Math.sqrt(1-b*b)).toFixed(2)}" ry="${(w*R).toFixed(2)}" fill="#b08a5c" opacity=".55"/>`;});}
+    return g;};
+  let svg=disk(cx,cy,k,k>9);
+  // Great Red Spot (south equatorial belt edge, ~22°S), if on the visible hemisphere
+  const dl=mod360(grsLonAt(jd)-sysII(jd)+180)-180;
+  const grsVisible=Math.abs(dl)<80;
+  const grsAt=(ox,oy,R)=>{const gx=-Math.sin(dl*DEG),gy=-0.36;return `<ellipse cx="${(ox+fx*gx*R).toFixed(2)}" cy="${(oy-fy*gy*R).toFixed(2)}" rx="${Math.max(1.2,0.17*R*Math.cos(dl*DEG)).toFixed(2)}" ry="${Math.max(0.9,0.09*R).toFixed(2)}" fill="#c0603a" opacity=".9"/>`;};
+  if(grsVisible)svg+=grsAt(cx,cy,k);
+  st.forEach(m=>{if(m.shadow)svg+=`<circle cx="${X(m.sx).toFixed(2)}" cy="${Y(m.y).toFixed(2)}" r="${Math.max(1.6,0.06*k).toFixed(2)}" fill="#000"/>`;});
+  st.forEach((m,i)=>{
+    if(m.occulted)return;
+    const px=X(m.x),py=Y(m.y),r=Math.max(2.2,0.045*k);
+    const col=m.eclipsed?'#5a6478':m.transit?'#fff8e0':'#e8ecf6';
+    svg+=`<circle cx="${px.toFixed(2)}" cy="${py.toFixed(2)}" r="${r.toFixed(2)}" fill="${col}" ${m.transit?'stroke="#8a6a40" stroke-width=".6"':''}/>`;
+    if(!compact)svg+=`<text x="${px.toFixed(1)}" y="${(i%2?py+r+11:py-r-4).toFixed(1)}" text-anchor="middle" font-size="10" fill="${m.eclipsed?'#7a8498':'var(--text2)'}" font-family="Space Mono,monospace">${m.name[0]}</text>`;
+  });
+  // compass
+  const ew=fx===1?['E','W']:['W','E'],ns=fy===1?'N':'S';
+  svg+=`<text x="6" y="${H/2+4}" font-size="10" fill="var(--text3)" font-family="Space Mono,monospace">${ew[0]}</text><text x="${W-6}" y="${H/2+4}" text-anchor="end" font-size="10" fill="var(--text3)" font-family="Space Mono,monospace">${ew[1]}</text><text x="${W/2}" y="11" text-anchor="middle" font-size="10" fill="var(--text3)" font-family="Space Mono,monospace">${ns}</text>`;
+  // magnified disk inset when something is happening on the disk
+  const busy=st.some(m=>m.shadow||m.transit)||grsVisible;
+  let inset='';
+  if(busy&&!compact){
+    const R=34,ox=W-R-10,oy=H-R*0.935-8,XI=x=>ox+fx*x*R,YI=y=>oy-fy*y*R;
+    inset=`<g><rect x="${ox-R-6}" y="${oy-R-6}" width="${2*R+12}" height="${2*R+10}" rx="5" fill="rgba(8,12,20,.85)" stroke="var(--border2)"/>${disk(ox,oy,R,true)}${grsVisible?grsAt(ox,oy,R):''}`;
+    st.forEach(m=>{if(m.shadow)inset+=`<circle cx="${XI(m.sx).toFixed(1)}" cy="${YI(m.y).toFixed(1)}" r="2.6" fill="#000"/>`;});
+    st.forEach(m=>{if(m.transit)inset+=`<circle cx="${XI(m.x).toFixed(1)}" cy="${YI(m.y).toFixed(1)}" r="2.4" fill="#fff8e0" stroke="#8a6a40" stroke-width=".6"/>`;});
+    inset+=`</g>`;
+  }
+  const notes=st.filter(m=>m.transit||m.shadow||m.occulted||m.eclipsed).map(m=>`${m.name}: ${[m.transit&&'crossing the disk',m.shadow&&'shadow on the disk',m.occulted&&'hidden behind Jupiter',m.eclipsed&&'eclipsed in Jupiter\'s shadow'].filter(Boolean).join(', ')}`);
+  if(grsVisible&&Math.abs(dl)<35)notes.push('Great Red Spot near the central meridian');
+  return `<div class="jup-diagram"><svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px;display:block">${svg}${inset}</svg>${compact||!notes.length?'':`<div class="jup-diagram-notes">${notes.join(' · ')}</div>`}</div>`;
+}
+// Jupiter-tab panel with date + time slider
+function renderJupDiagramPanel(){
+  const el=document.getElementById('jupDiagram');if(!el)return;
+  if(!JD_DIAG.iso){const now=new Date();
+    JD_DIAG.iso=(JS.year===now.getFullYear()&&JS.month===now.getMonth())?tonightISO():`${JS.year}-${String(JS.month+1).padStart(2,'0')}-15`;}
+  const jdMid=jdMidOfISO(JD_DIAG.iso),w=nightWindow(jdMid);
+  const mins=Math.max(30,Math.round((w.e-w.d)*1440));
+  if(JD_DIAG.min==null||JD_DIAG.min>mins){const now=jdOfDate(new Date());JD_DIAG.min=(now>=w.d&&now<=w.e)?Math.round((now-w.d)*1440):Math.round(mins/2);}
+  const jd=w.d+JD_DIAG.min/1440;
+  const p=planetPos(jd,'Jupiter'),alt=altAz(p.ra,p.dec,ST.lat,ST.lon,jd).alt;
+  el.innerHTML=`<div class="jup-diag-card">
+    <div class="jup-diag-head"><b>Moon positions</b>
+      <input type="date" value="${JD_DIAG.iso}" onchange="JD_DIAG.iso=this.value;JD_DIAG.min=null;renderJupDiagramPanel()">
+      <span class="jup-diag-time">${fmtTime(jd)}</span>
+      <button class="btn btn-sm btn-outline" onclick="jupDiagNow()">Now</button>
+      <select onchange="JD_DIAG.orient=this.value;LS.set('jupOrient',this.value);renderJupDiagramPanel()" title="Match the view in your instrument">
+        <option value="sky"${JD_DIAG.orient==='sky'?' selected':''}>Eye / binoculars (N up)</option>
+        <option value="newt"${JD_DIAG.orient==='newt'?' selected':''}>Newtonian / Dob (S up)</option>
+        <option value="diag"${JD_DIAG.orient==='diag'?' selected':''}>Refractor / SCT + diagonal</option>
+      </select>
+      <span class="tn-muted" style="margin-left:auto">${alt>0?`Jupiter ${Math.round(alt)}° up`:'Jupiter below the horizon'}</span></div>
+    <input type="range" class="jup-diag-slider" min="0" max="${mins}" step="5" value="${JD_DIAG.min}" oninput="JD_DIAG.min=+this.value;renderJupDiagramPanel._fast()">
+    <div id="jupDiagSvg">${jupiterDiagram(jd)}</div>
+  </div>`;
+}
+renderJupDiagramPanel._fast=function(){   // slider: update only the picture + time label
+  const jdMid=jdMidOfISO(JD_DIAG.iso),w=nightWindow(jdMid),jd=w.d+JD_DIAG.min/1440;
+  document.getElementById('jupDiagSvg').innerHTML=jupiterDiagram(jd);
+  const t=document.querySelector('.jup-diag-time');if(t)t.textContent=fmtTime(jd);
+};
+function jupDiagNow(){JD_DIAG.iso=tonightISO();JD_DIAG.min=null;renderJupDiagramPanel();}
+function jupDiagSetJD(jd){
+  // night that contains jd: local date of (jd − 12 h)
+  const d=dateOfJD(jd-0.5);JD_DIAG.iso=localISODate(new Date(d.getTime()));
+  const w=nightWindow(jdMidOfISO(JD_DIAG.iso));JD_DIAG.min=Math.max(0,Math.round((jd-w.d)*1440));
+  renderJupDiagramPanel();document.getElementById('jupDiagram')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── RED NIGHT MODE ──────────────────────────────────────────────────────────
+function setRed(on){document.documentElement.classList.toggle('red',on);LS.set('red',on);
+  const b=document.getElementById('redBtn');if(b)b.classList.toggle('on',on);}
+function toggleRed(){setRed(!document.documentElement.classList.contains('red'));}
+document.addEventListener('keydown',e=>{if((e.key==='r'||e.key==='R')&&!e.ctrlKey&&!e.metaKey&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName||''))toggleRed();});
+if(LS.get('red',false))setRed(true);
+
+// ── TOUCH SUPPORT ───────────────────────────────────────────────────────────
+// · tap shows a tooltip (browsers emulate mouseenter); a tap elsewhere hides it
+// · long-press acts as right-click (jump to that night) on every element that has one
+// · the Night chart can be scrubbed with a finger
+(function touchSupport(){
+  let timer=null,sx=0,sy=0,target=null,suppress=0;
+  document.addEventListener('touchstart',e=>{
+    if(!e.target.closest?.('.tooltip'))hideTT();
+    const t=e.touches[0];if(!t||e.touches.length>1)return;
+    sx=t.clientX;sy=t.clientY;target=e.target;clearTimeout(timer);
+    timer=setTimeout(()=>{
+      const ev=new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:sx,clientY:sy});
+      target.dispatchEvent(ev);suppress=Date.now();try{navigator.vibrate&&navigator.vibrate(12);}catch(_){}
+    },550);
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{const t=e.touches[0];if(t&&Math.hypot(t.clientX-sx,t.clientY-sy)>10)clearTimeout(timer);},{passive:true});
+  document.addEventListener('touchend',()=>clearTimeout(timer),{passive:true});
+  document.addEventListener('touchcancel',()=>clearTimeout(timer),{passive:true});
+  // swallow the click that follows a long-press
+  document.addEventListener('click',e=>{if(Date.now()-suppress<700){e.stopPropagation();e.preventDefault();}},true);
+  // First tap on something with a tooltip just shows the tooltip; a second tap on the same
+  // thing does its normal click (open the detail panel, etc.). Otherwise the full-screen
+  // panel on phones would cover the tooltip immediately.
+  let lastPointer='mouse',armed=null,touchEndAt=0;
+  document.addEventListener('pointerdown',e=>{lastPointer=e.pointerType;},true);
+  document.addEventListener('touchend',()=>{touchEndAt=Date.now();},{capture:true,passive:true});
+  // Some browsers emit a synthetic mouseleave right after a tap, which would hide the tooltip
+  // that tap just opened. Ignore those; the next touch hides it instead.
+  ['mouseleave','mouseout'].forEach(t=>document.addEventListener(t,e=>{
+    if(lastPointer!=='mouse'&&Date.now()-touchEndAt<1500)e.stopPropagation();},true));
+  document.addEventListener('click',e=>{
+    if(lastPointer==='mouse')return;
+    if(e.target.closest('button,input,select,label,a,.tab,.nav-btn,.tn-row,.tn-pick,.tn-more,.tn-equip,.dso-info,.opt-item,.jup-event'))return;
+    const tipShown=$tooltip.classList.contains('visible');
+    if(tipShown&&armed!==e.target){armed=e.target;e.stopPropagation();e.preventDefault();return;}
+    armed=null;
+  },true);
+  // Night chart: finger scrubbing (horizontal drags; vertical still scrolls the page)
+  const cv=$nightCanvas;cv.style.touchAction='pan-y';
+  const fwd=e=>{if(e.pointerType==='mouse')return;nightHoverAt(e);};
+  cv.addEventListener('pointerdown',fwd);cv.addEventListener('pointermove',fwd);
+  cv.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse')setTimeout(hideNightTT,2500);});
+})();
+
+// Night chart redraws at the new size when the window changes (sharp on rotation too)
+let _resizeT=null;
+window.addEventListener('resize',()=>{clearTimeout(_resizeT);_resizeT=setTimeout(()=>{
+  const a=document.querySelector('.tab.active')?.id;if(a==='tab-night')renderNight();if(a==='tab-tonight')renderTonight();},200);});
+
+// ── SETUP PANEL (equipment) ────────────────────────────────────────────────
+function renderSetupOpts(){
+  const el=document.getElementById('setupOpts');if(!el)return;
+  el.innerHTML=`<label class="setup-row"><span>Instrument</span><select onchange="EQUIP.aperture=+this.value;saveEquip()">${APERTURES.map(([v,l])=>`<option value="${v}"${v===EQUIP.aperture?' selected':''}>${l}</option>`).join('')}</select></label>
+    <label class="setup-row"><span>Your sky</span><select onchange="EQUIP.bortle=+this.value;saveEquip()">${Object.entries(BORTLE_DESC).map(([v,l])=>`<option value="${v}"${+v===EQUIP.bortle?' selected':''}>Bortle ${v} — ${l}</option>`).join('')}</select></label>
+    <label class="setup-row" style="cursor:pointer"><span>Nebula filter</span><span><input type="checkbox" ${EQUIP.filter?'checked':''} onchange="EQUIP.filter=this.checked;saveEquip()" style="accent-color:var(--accent)"> I have a UHC or OIII filter</span></label>
+    <div class="tn-muted" style="font-size:10px;margin-top:4px">Used for the Tonight targets, the visibility guide on deep sky objects, and which sky-condition note is highlighted. Saved in this browser.</div>`;
+}
+function saveEquip(){LS.set('equip',EQUIP);}
+
 
 applySettings();
 
@@ -3245,11 +3749,22 @@ document.addEventListener('keydown', e => {
 <hr>
 <h2>Quick Start</h2>
 <p>1. Open <code>index.html</code> in Chrome, Firefox, or Safari</p>
-<p>2. Optionally enter your ZIP code in Settings and click Apply, or click <strong>⌖ Locate</strong> to use your browser's geolocation</p>
-<p>3. Use the five tabs to explore the year, plan a specific night, or check Jupiter, Saturn, and deep sky objects</p>
+<p>2. Enter your ZIP code (or lat,lon) and click Apply, or click <strong>⌖ Locate</strong> to use your browser's geolocation</p>
+<p>3. Open <strong>⚙ Objects</strong> once and set your instrument, sky (Bortle class) and whether you own a nebula filter</p>
+<p>4. The <strong>Tonight</strong> tab answers "is it worth going out?" The other five tabs explore the year, a single night, Jupiter, Saturn and deep sky objects</p>
+<p>5. At the telescope, tap <strong>☾ Red</strong> (or press <kbd>R</kbd>) for red night-vision mode</p>
 <p>Your location is saved in the URL hash (e.g. <code>#94102</code> or <code>#37.77,-122.41</code>) so it persists across reloads and can be bookmarked or shared.</p>
 <hr>
 <h2>Tabs</h2>
+<h3>Tonight</h3>
+<p>The landing page. For tonight (or any night, with ‹ ›):</p>
+<ul>
+<li><strong>Verdict</strong> — good / partly dark / moonlit / no real darkness, with the hours of moon-free astronomical darkness (Sun below −18°, Moon below the horizon or under 15% lit) before your Late Night cutoff</li>
+<li><strong>Night strip</strong> — sky darkness from sunset to sunrise, Moon-up shading, the moon-free dark window in teal, your cutoff and the current time</li>
+<li><strong>Moon &amp; planets</strong> — when each is above 10° in your window and its best time; Saturn's ring tilt; Jupiter's event count</li>
+<li><strong>Jupiter's moons tonight</strong> — shadow transits, moon transits and Great Red Spot crossings while Jupiter is up, plus a live diagram (tap an event to show it)</li>
+<li><strong>Best deep-sky targets</strong> — ranked by altitude in full darkness, tonight's moonlight and the visibility guide for your setup, each with the note for your sky</li>
+</ul>
 <h3>Year View</h3>
 <p>An annual Gantt-style timeline showing every tracked object's visibility across the full calendar year. Each row is one object; bars represent nights when the object rises above your effective horizon during your observing window.</p>
 <p><strong>Bar encoding:</strong></p>
@@ -3349,6 +3864,8 @@ document.addEventListener('keydown', e => {
 <hr>
 <h3>Deep Sky Tab</h3>
 <p>An annual visibility timeline for 27 deep sky objects, with filter recommendations and Bortle sky condition context.</p>
+<p><strong>Moonlight (v15):</strong> the ☾ Moonlight row shows how bright the sky is during the dark hours of each night (Moon phase × time above the horizon). Object bars dim on moonlit nights, more for galaxies and nebulae than for star clusters. Peak altitude is measured in full astronomical darkness.</p>
+<p><strong>Visibility guide (v15):</strong> each object shows Easy / Good / Challenging / Beyond reach for your instrument and sky (set in ⚙ Objects). It's a rough estimate from magnitude, size, aperture, sky brightness and filter, calibrated against the catalog's own sky-condition notes. The note for your sky is highlighted.</p>
 <p><strong>Objects included:</strong></p>
 <table>
 <tr><th>Type</th><th>Objects</th></tr>
@@ -3403,6 +3920,9 @@ z = −r · cos(u)                 [z &lt; 0 = in front of Jupiter]
 <p><strong>Measured accuracy:</strong> against JPL Horizons (Oct 2026) the moon positions match to 0.01–0.03 Rj, equivalent to timing offsets of +1.5 min (Io), +0.5 min (Europa), +3 min (Ganymede), +5.5 min (Callisto). Against published January 2026 event tables, transit and shadow start/end times agree within 0–2 minutes. Matches Meeus Example 44.a to 0.02 Rj.</p>
 <p><strong>GRS:</strong> System II central meridian from Meeus Ch.43 (low-accuracy method) with light-time correction: <code>CM_II = 187.23° + 870.1869088° · (d − Δ/173) + ψ − B</code>, d = JD − 2451545.0. Matches Meeus's worked example to ~1° (≈2 min). The GRS counts as visible within ±35° of the central meridian; the GRS longitude itself comes from the S&amp;T/JUPOS drift model and is the main uncertainty.</p>
 <p><strong>Callisto transit seasons:</strong> possible only when |D<sub>E</sub>| < 2.03°. Current season ~mid-2025 to ~Sep 2028; next from ~Dec 2031. The Jupiter tab computes these dates.</p>
+<h3>Jupiter moon diagram (v15)</h3>
+<p>At the top of the Jupiter tab: Jupiter, the four Galilean moons, their shadows and the Great Red Spot at any time of a chosen night. Drag the slider to move through the night; click (or tap) an event bar in the timeline to jump to it. A magnified inset appears when a shadow, transit or the GRS is on the disk. Moons hidden behind Jupiter are omitted; moons in Jupiter's shadow are drawn grey.</p>
+<p><strong>Orientation:</strong> <em>Eye / binoculars</em> = north up, east left; <em>Newtonian / Dob</em> = rotated 180°; <em>Refractor / SCT + diagonal</em> = mirrored east–west. A small version appears in the Single Night tooltip for Jupiter.</p>
 <h3>Saturn — Ring System</h3>
 <p><strong>Ring tilt B</strong> — Meeus Ch.45:</p>
 <pre><code>
@@ -3471,7 +3991,9 @@ index.html
     ├── UI HELPERS   Tooltips, detail panel (with magnitude), tabs, settings
     ├── JUPITER TAB  Galilean moon timeline, nightWindow(), GRS model, scoring
     ├── SATURN TAB   Ring tilt context, shadow geometry, Titan note
-    └── DEEP SKY TAB DSO_CATALOG (27 entries), dsoSVG(), Bortle tooltips
+    ├── DEEP SKY TAB DSO_CATALOG (27 entries), dsoSVG(), Bortle tooltips, moonlight row
+    └── v15 FEATURES  LS storage, EQUIP + dsoReach(), darkWindow(), nightMoonlight(),
+                     renderTonight(), jupiterDiagram(), red mode, touch support
 </code></pre>
 <p><strong>Key constants:</strong></p>
 <pre><code>
@@ -3497,6 +4019,17 @@ const RAD = 180 / Math.PI;      // radians → degrees
 </ul>
 <hr>
 <h2>Changelog</h2>
+<h3>v15 — observing features</h3>
+<ul>
+<li><strong>Tonight tab</strong> (new landing page): verdict, darkness and moonlight strip, planets, Jupiter events with a diagram, and the best deep-sky targets for your setup</li>
+<li><strong>Moonlight on the Deep Sky tab:</strong> Moonlight row, moonlit nights dim the bars, tooltip shows the Moon's effect; peak altitude now uses astronomical darkness and samples every 2 days</li>
+<li><strong>Equipment profile</strong> (⚙ Objects → Your setup): instrument, Bortle class, nebula filter; drives the visibility guide, the highlighted sky note and Tonight's rankings; saved in this browser</li>
+<li><strong>Live Jupiter moon diagram</strong> with time slider, instrument orientation and a disk inset; also in the Night tooltip</li>
+<li><strong>Red night-vision mode</strong> (☾ Red or <kbd>R</kbd>), remembered between visits</li>
+<li><strong>Touch support:</strong> tap for tooltips (tap again to open), long-press for the right-click actions, finger-scrub the Single Night chart, larger touch targets, full-width detail panel and scrollable tabs on phones</li>
+<li><strong>Sharp Single Night chart</strong> on high-density screens; redraws on resize and rotation; azimuth readout no longer jumps when an object crosses north</li>
+<li>Sun events now include nautical and astronomical twilight</li>
+</ul>
 <h3>v14</h3>
 <ul>
 <li>New eyepiece sketches for M42 (correct fan shape, Trapezium, dark notch, M43) and NGC 7009 (no longer drawn as a ringed planet)</li>
