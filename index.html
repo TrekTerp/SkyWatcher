@@ -274,12 +274,25 @@ html.red body>*{filter:grayscale(1) sepia(1) saturate(10) hue-rotate(-42deg) bri
 .hint-touch{display:none}
 @media(pointer:coarse){.hint-mouse{display:none}.hint-touch{display:inline}.nav-btn{width:34px;height:34px}.btn-sm{padding:6px 11px}}
 @media(max-width:700px){.detail-panel{width:100%}.content{padding:12px}.tn-date{min-width:0}.tn-vhead{font-size:16px}.tn-picks{grid-template-columns:1fr}}
+/* ── v16: upcoming highlights ── */
+.hl-row{display:grid;grid-template-columns:92px 26px 1fr;gap:10px;align-items:start;padding:9px 6px;border-bottom:1px solid var(--border);border-radius:4px;cursor:pointer}
+.hl-row:last-of-type{border-bottom:none}.hl-row:hover{background:var(--bg3)}
+.hl-date{font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.5;padding-top:1px}
+.hl-icon{font-size:15px;text-align:center;line-height:1.3}
+.hl-title{font-size:13px;font-weight:600;color:var(--text);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.hl-when{font-family:var(--mono);font-size:11px;font-weight:400;color:var(--text3)}
+.hl-text{font-size:12px;color:var(--text2);line-height:1.55;margin-top:2px}
+.hl-major .hl-title{color:var(--gold)}
+.hl-dim{opacity:.55}
+.hl-late{font-size:9px;font-family:var(--mono);color:#e8a050;border:1px solid #e8a05055;border-radius:3px;padding:0 4px;margin-left:4px;text-transform:uppercase;letter-spacing:.04em}
+.hl-next a{color:var(--accent);cursor:pointer;text-decoration:underline}
+@media(max-width:700px){.hl-row{grid-template-columns:64px 20px 1fr;gap:8px}}
 .dso-bortle-legend{display:flex;gap:16px;align-items:center;font-size:10px;font-family:var(--mono);color:var(--text3);flex-wrap:wrap;padding:6px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)}
 </style>
 </head>
 <body>
 <div class="header">
-  <div class="logo"><img id="logoImg" alt=""> SKYWATCHER <span style="font-size:10px;color:var(--text3)">v15</span></div>
+  <div class="logo"><img id="logoImg" alt=""> SKYWATCHER <span style="font-size:10px;color:var(--text3)">v16</span></div>
   <div class="settings-bar">
     <label>ZIP</label><input type="text" id="zipInput" value="94102" placeholder="ZIP or lat,lon" style="width:120px" title="5-digit ZIP from the built-in table, or type lat,lon (e.g. 38.69,-121.31)">
     <button class="btn btn-sm btn-outline" onclick="useMyLocation()" title="Use browser geolocation">⌖ Locate</button>
@@ -1135,7 +1148,7 @@ function findExactPhase(jdApprox, type) {
   for (let i = 0; i < 40; i++) {
     const mid = (lo + hi) / 2;
     const s = sunPos(mid), m = moonPos(mid);
-    const phase = mod360(m.ra - s.ra);
+    const phase = mod360(m.lon - s.lon);   // v16: phases are defined in ecliptic longitude (RA gave 1–2 h errors)
     // signed distance from target (handling wrap)
     const d = mod360(phase - target + 180) - 180;
     if (d < 0) lo = mid; else hi = mid;
@@ -1150,7 +1163,7 @@ function scanMoonPhases(startJD, diy) {
   for (let d = 0; d <= diy + 2; d += STEP) {
     const jd = startJD + d;
     const s = sunPos(jd), m = moonPos(jd);
-    const phase = mod360(m.ra - s.ra);
+    const phase = mod360(m.lon - s.lon);   // v16: ecliptic longitude
     if (prevPhase !== null) {
       // New moon: phase wraps from ~350 → ~10
       if (prevPhase > 300 && phase < 60)
@@ -1457,6 +1470,9 @@ function computePlanetEvents(obj, startJD, diy) {
       if (e0 !== null && e1 !== null) {
         // Local maximum = greatest elongation
         if (e1 > e0 && e1 > elong) {
+          // v16: refine the maximum to the hour
+          let jm=jd1,em=e1;for(let h=-36;h<=36;h++){const v=elongAngle(jd1+h/24,name);if(v>em){em=v;jm=jd1+h/24;}}
+          jd1=jm;e1=em;
           const isEast = eclipLonDiff(jd1, name) < 180;
           if (jd1 >= startJD && jd1 < startJD + diy)
             // GEE = evening star (planet east of sun) → ◁ points toward sunset
@@ -3529,7 +3545,7 @@ function renderTonight(){
         <div class="tn-pick-text">${d.bortle[sky]}</div>
         <div class="tn-pick-meta">${fl}${p.moonW<0.7?`${fl?' · ':''}<span style="color:#e8a050">Moonlight hurts this one tonight</span>`:''}</div>
       </div></div>`;}).join('');
-  const more=picks.slice(6,14).map(p=>`<span class="tn-more" onclick="showDSODetail('${p.d.id}')">${p.d.name}${p.d.common?' '+p.d.common:''}</span>`).join('');
+  const more=picks.slice(6,14).map(p=>`<span class="tn-more" onclick="showDSODetail('${p.d.id}')">${p.d.name}${p.d.common?' '+p.d.common:''}</span>`).join(' ');
   document.getElementById('tonightContent').innerHTML=`
     <div class="tn-verdict tn-${vClass}"><div class="tn-vhead">${vHead}</div><div class="tn-vsub">${vSub}</div></div>
     <div class="tn-card">
@@ -3550,7 +3566,10 @@ function renderTonight(){
       <div class="tn-card-title">Best deep-sky targets for ${equipLabel()} <span class="tn-edit" onclick="openOpts()">change</span></div>
       ${dk.e<=dk.d?'<div class="tn-muted">No dark time before your cutoff.</div>':pickCards?`<div class="tn-picks">${pickCards}</div>${more?`<div class="tn-muted" style="margin-top:10px">Also well placed: ${more}</div>`:''}`:'<div class="tn-muted">Nothing in the catalog is well placed and within reach tonight.</div>'}
       <div class="tn-foot">Ranked by altitude in the dark window, moonlight and a rough visibility guide for your setup${dk.astro?'':' · no astronomical darkness tonight, using twilight limits'}.</div>
-    </div>`;
+    </div>
+    <div class="tn-card" id="tnHighlights"><div class="tn-card-title">Upcoming highlights · next 30 nights</div><div class="tn-muted">Looking ahead…</div></div>`;
+  // v16: computed after the rest of Tonight has painted
+  const _hlIso=TN.date;setTimeout(()=>renderHighlights(_hlIso),30);
   if(jupUp){
     const jp=planets.find(p=>p.o.id==='jupiter');
     const t=jev.length?jev[0].mid:jp.best.jd;
@@ -3717,6 +3736,325 @@ function renderSetupOpts(){
 function saveEquip(){LS.set('equip',EQUIP);}
 
 
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  v16 UPCOMING HIGHLIGHTS — next 30 nights from the night shown on Tonight ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+// Everything is computed for the observer's location and checked for visibility:
+// an event only appears if it can actually be seen from there (Sun below −6°,
+// objects above the horizon). Events after the Late Night cutoff are kept but tagged.
+
+const HL_DAYS=30;
+// Ecliptic stars and clusters the Moon regularly passes or covers (J2000)
+const HL_STARS=[
+  {name:'Aldebaran',ra:68.9802,dec:16.5093,thr:1.5,ext:0},
+  {name:'Regulus',ra:152.0930,dec:11.9672,thr:1.5,ext:0},
+  {name:'Spica',ra:201.2983,dec:-11.1613,thr:1.5,ext:0},
+  {name:'Antares',ra:247.3519,dec:-26.4320,thr:1.5,ext:0},
+  {name:'the Pleiades',ra:56.8711,dec:24.1051,thr:1.6,ext:0.55,cluster:true,dso:'m45'},
+  {name:'the Beehive Cluster',ra:130.05,dec:19.98,thr:1.6,ext:0.5,cluster:true,dso:'m44'},
+];
+// Major showers. Peak solar longitude (J2000) and ZHR from the IMO 2026 Meteor Shower Calendar (Table 5);
+// radiant J2000. Peak dates are computed for the year, so they stay right in future years.
+const HL_SHOWERS=[
+  {name:'Quadrantids',lam:283.15,zhr:80,ra:230,dec:49,note:'sharp peak lasting only a few hours'},
+  {name:'Lyrids',lam:32.32,zhr:18,ra:271,dec:34,note:'occasional bright fireballs'},
+  {name:'Eta Aquariids',lam:45.5,zhr:50,ra:338,dec:-1,note:'pre-dawn only; debris from Halley\'s Comet'},
+  {name:'Southern Delta Aquariids',lam:128,zhr:25,ra:340,dec:-16,note:'best from southern latitudes; overlaps the early Perseids'},
+  {name:'Perseids',lam:140.0,zhr:100,ra:48,dec:58,note:'the year\'s most reliable shower'},
+  {name:'Orionids',lam:208,zhr:20,ra:95,dec:16,note:'fast meteors from Halley\'s Comet'},
+  {name:'Southern Taurids',lam:223,zhr:7,ra:32,dec:9,note:'low rates but slow, bright fireballs'},
+  {name:'Northern Taurids',lam:230,zhr:5,ra:58,dec:22,note:'low rates but slow, bright fireballs'},
+  {name:'Leonids',lam:235.27,zhr:15,ra:152,dec:22,note:'very fast meteors; radiant rises around midnight'},
+  {name:'Geminids',lam:262.2,zhr:150,ra:112,dec:33,note:'the year\'s richest shower; active from mid-evening'},
+  {name:'Ursids',lam:270.7,zhr:10,ra:217,dec:76,note:'modest shower near the solstice'},
+];
+const HL_NELM={1:7.6,2:7.1,3:6.6,4:6.3,5:5.9,6:5.5,7:5.0,8:4.5,9:4.0};
+const FULL_MOON_NAMES=['Wolf','Snow','Worm','Pink','Flower','Strawberry','Buck','Sturgeon','Corn','Hunter\'s','Beaver','Cold'];
+
+// ── small helpers ──
+const _hlDOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],_hlMON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function hlNightOf(jd){return localISODate(new Date(dateOfJD(jd).getTime()-12*3600e3));}   // the night an instant belongs to
+function hlAddDays(iso,n){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return localISODate(d);}
+function hlDay(iso,withDow=true){const d=new Date(iso+'T12:00:00');return (withDow?_hlDOW[d.getDay()]+' ':'')+_hlMON[d.getMonth()]+' '+d.getDate();}
+function hlLocalDay(jd){const d=dateOfJD(jd);return _hlDOW[d.getDay()]+' '+_hlMON[d.getMonth()]+' '+d.getDate();}
+function hlCompass(az){return['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(mod360(az)/22.5)%16];}
+function hlWhere(alt,az){return `${Math.round(alt)}° up in the ${hlCompass(az)}`;}
+function hlSunAlt(jd){const s=sunPos(jd);return altAz(s.ra,s.dec,ST.lat,ST.lon,jd).alt;}
+// the full dark-enough night (civil dusk → civil dawn), ignoring the cutoff
+function hlFullNight(jdMid){const sv=sunEvents(jdMid,ST.lat,ST.lon),jN=jdLocalNoon(jdMid,ST.lon);return{d:sv.dusk||jN+7/24,e:sv.dawn||jN+17/24,sv};}
+function hlLateTag(jd,jdMid){return jd>lateCutoffJD(jdMid)?' <span class="hl-late">after your cutoff</span>':'';}
+const _starPos=s=>jd=>precessFromJ2000(s.ra,s.dec,jd);
+
+// ── main computation ──
+const _hlCache=new Map();
+function computeHighlights(isoStart){
+  const key=[isoStart,ST.lat,ST.lon,ST.lateH,EQUIP.aperture,EQUIP.bortle,EQUIP.filter,JS.grsOffset].join('|');
+  if(_hlCache.has(key))return _hlCache.get(key);
+  const out=[],jd0=jdMidOfISO(isoStart),nights=[];
+  for(let i=0;i<HL_DAYS;i++){const iso=hlAddDays(isoStart,i);nights.push({iso,jdMid:jdMidOfISO(iso)});}
+  const startJD=jdLocalNoon(jd0,ST.lon),endJD=startJD+HL_DAYS;
+  const inRange=jd=>jd>=startJD&&jd<endJD;
+
+  // 1 ── Moon phases, eclipses, full-Moon names, supermoons ──────────────────
+  const phases=scanMoonPhases(startJD-1,HL_DAYS+2).filter(p=>inRange(p.jd));
+  phases.forEach(ph=>{
+    const night=hlNightOf(ph.jd);
+    if(ph.type==='full'){
+      const m=moonPos(ph.jd),s=sunPos(ph.jd),dt=dateOfJD(ph.jd);
+      let nm=FULL_MOON_NAMES[dt.getMonth()]+' Moon';
+      if(s.lon>=165&&s.lon<=195)nm='Harvest Moon';else if(s.lon>195&&s.lon<=224)nm='Hunter\'s Moon';
+      const sup=m.dist<362000?' — a supermoon':m.dist>404000?' — a micromoon':'';
+      const em=lunarEclipseMag(ph.jd);
+      if(em.type!=='none'){
+        const mt=moonPosTopo(ph.jd),a=altAz(mt.ra,mt.dec,ST.lat,ST.lon,ph.jd);
+        const vis=a.alt>2,TY={total:'Total',partial:'Partial',penumbral:'Penumbral'}[em.type];
+        if(vis||em.type!=='penumbral')out.push({jd:ph.jd,night,icon:'🌘',color:'#ff7a50',weight:10,cat:'eclipse',
+          title:`${TY} lunar eclipse`,
+          text:vis?`Mid-eclipse at ${fmtTime(ph.jd)}, Moon ${hlWhere(a.alt,a.az)}. ${em.type==='penumbral'?'A subtle shading on one side of the Moon — easy to miss.':em.type==='partial'?`About ${Math.round(em.umbMag*100)}% of the Moon's width enters Earth's dark shadow.`:'The whole Moon turns coppery red.'}`
+                  :`Not visible from your location — the Moon is below the horizon at mid-eclipse.`,
+          when:vis?fmtTime(ph.jd)+hlLateTag(ph.jd,jdMidOfISO(night)):'not visible here',dim:!vis});
+      }
+      out.push({jd:ph.jd,night,icon:'🌕',color:'#d4c9a8',weight:2,cat:'moon',title:`Full Moon · ${nm}${sup}`,
+        text:`Bright moonlight all night for a few nights either side — a good stretch for the Moon itself, planets, double stars and bright clusters rather than faint galaxies.`,
+        when:fmtTime(ph.jd)});
+    }else{
+      const sol=maxSolarCoverage(ph.jd,ST.lat,ST.lon);
+      if(sol.coverage>=0.005){
+        const a=altAz(sunPos(sol.jdMax).ra,sunPos(sol.jdMax).dec,ST.lat,ST.lon,sol.jdMax);
+        out.push({jd:sol.jdMax,night:localISODate(dateOfJD(sol.jdMax)),icon:'☀',color:'#ffcc44',weight:10,cat:'eclipse',
+          title:`${sol.type==='total'?'Total':sol.type==='annular'?'Annular':'Partial'} solar eclipse — ${Math.round(sol.coverage*100)}% here`,
+          text:`Maximum at ${fmtTime(sol.jdMax)}, Sun ${hlWhere(a.alt,a.az)}. Never look at the Sun without certified eclipse glasses or a proper solar filter.`,
+          when:fmtTime(sol.jdMax),daytime:true});
+      }
+    }
+  });
+
+  // 2 ── Dark-sky windows (moon-free darkness before the cutoff) ─────────────
+  const cond=nights.map(n=>{const c=nightConditions(n.jdMid);return{...n,freeH:c.freeH,darkH:c.darkH};});
+  const good=c=>c.darkH>=1.5&&c.freeH>=Math.min(2.5,0.8*c.darkH);
+  for(let i=0;i<cond.length;){
+    if(!good(cond[i])){i++;continue;}
+    let j=i;while(j+1<cond.length&&good(cond[j+1]))j++;
+    const run=cond.slice(i,j+1),best=run.reduce((a,b)=>b.freeH>a.freeH?b:a);
+    const wk=run.filter(r=>{const d=new Date(r.iso+'T12:00:00').getDay();return d===5||d===6;}).map(r=>hlDay(r.iso));
+    const nm=phases.find(p=>p.type==='new'&&hlNightOf(p.jd)>=run[0].iso&&hlNightOf(p.jd)<=run[run.length-1].iso);
+    const cont=i===0,lo=Math.min(...run.map(r=>r.freeH)),hi=Math.max(...run.map(r=>r.freeH));
+    out.push({jd:jdLocalNoon(run[0].jdMid,ST.lon)+0.3,night:run[0].iso,icon:'✦',color:'#6db',weight:6,cat:'dark',
+      title:cont?`Dark-sky window — through ${hlDay(run[run.length-1].iso,false)}`:`Dark-sky window: ${hlDay(run[0].iso,false)} – ${hlDay(run[run.length-1].iso,false)}`,
+      text:`${run.length} night${run.length>1?'s':''} with ${lo===hi?hi.toFixed(1):lo.toFixed(1)+'–'+hi.toFixed(1)} h of moon-free darkness before your cutoff — the time for galaxies, nebulae and faint targets.${nm?` New Moon ${hlLocalDay(nm.jd)}.`:''}${wk.length?` Weekend nights: ${wk.join(', ')}.`:''}`,
+      when:`best ${hlDay(best.iso)}`,range:[run[0].iso,run[run.length-1].iso]});
+    i=j+1;
+  }
+
+  // 3 ── Moon near / covering planets, bright stars and clusters ─────────────
+  const planets=OBJECTS.filter(o=>o.type==='planet');
+  const targets=[...planets.map(o=>({name:o.name,get:jd=>planetPos(jd,o.name),thr:['Uranus','Neptune'].includes(o.name)?0:3,ext:0,planet:true,color:o.color})),
+                 ...HL_STARS.map(s=>({...s,get:_starPos(s)}))];
+  const best=targets.map(()=>[]);   // per target, per night: closest visible approach (+ closest with Moon ≥15° up)
+  nights.forEach((n,ni)=>{
+    const fn=hlFullNight(n.jdMid);
+    for(let jd=fn.d;jd<=fn.e;jd+=1/144){
+      const m=moonPosTopo(jd),ma=altAz(m.ra,m.dec,ST.lat,ST.lon,jd);if(ma.alt<5)continue;
+      targets.forEach((t,ti)=>{const p=t.get(jd),sep=angSep(m,p);if(sep>4)return;
+        const pa=altAz(p.ra,p.dec,ST.lat,ST.lon,jd);if(pa.alt<5)return;
+        let b=best[ti][ni];if(!b||sep<b.sep){const hi=b&&b.hi;b=best[ti][ni]={sep,jd,alt:ma.alt,az:ma.az,ni,hi};}
+        if(ma.alt>=15&&pa.alt>=10&&(!b.hi||sep<b.hi.sep))b.hi={sep,jd,alt:ma.alt,az:ma.az};});
+    }
+  });
+  const moonIllum=jd=>moonPhase(jd).illum;
+  targets.forEach((t,ti)=>{
+    const arr=best[ti];
+    arr.forEach((b,ni)=>{
+      if(!b)return;
+      const prev=arr[ni-1],next=arr[ni+1];if((prev&&prev.sep<b.sep)||(next&&next.sep<=b.sep))return;   // local minimum only
+      const night=nights[ni].iso,jdMid=nights[ni].jdMid;
+      // occultation? refine at 1-minute steps around the closest sample
+      const sd=jd=>0.2724*Math.asin(6378.14/moonPosTopo(jd).dist)*RAD;
+      let ing=null,egr=null;
+      if(b.sep<sd(b.jd)+t.ext+0.25){
+        let inside=false;
+        for(let k=-240;k<=240;k++){const jd=b.jd+k/1440,m=moonPosTopo(jd),s=angSep(m,t.get(jd))<sd(jd)+t.ext;
+          if(s&&!inside)ing=jd;if(!s&&inside)egr=jd;inside=s;}
+      }
+      const illum=moonIllum(b.jd);
+      if(ing||egr){
+        const contacts=[ing,egr].filter(Boolean),vis=contacts.filter(jd=>{const m=moonPosTopo(jd);return altAz(m.ra,m.dec,ST.lat,ST.lon,jd).alt>3&&hlSunAlt(jd)<-4;});
+        if(!vis.length)return;
+        const waxing=mod360(moonPos(b.jd).ra-sunPos(b.jd).ra)<180;
+        const limbIn=waxing?'dark':'bright',limbOut=waxing?'bright':'dark';
+        out.push({jd:ing||egr,night,icon:'◐',color:'#ffd27a',weight:t.planet||!t.cluster?9:7,cat:'occult',
+          title:t.cluster?`The Moon passes in front of ${t.name}`:`The Moon covers ${t.name}`,
+          text:t.cluster?`The ${illum}%-lit Moon drifts across the cluster, hiding stars one by one${ing&&egr?` from about ${fmtTime(ing)} to ${fmtTime(egr)}`:''}. Watch with binoculars or a low-power eyepiece.`
+            :`${ing?`${t.name} disappears at the Moon's ${limbIn} edge at ${fmtTime(ing)}`:''}${ing&&egr?' and ':''}${egr?`${ing?'reappears':t.name+' reappears'} at the ${limbOut} edge at ${fmtTime(egr)}`:''}. Moon ${illum}% lit, ${hlWhere(b.alt,b.az)}. ${t.planet?'A telescope shows the planet sliding behind the lunar edge over several seconds.':'Stars blink out instantly.'}`,
+          when:fmtTime(ing||egr)+hlLateTag(ing||egr,jdMid)});
+        return;
+      }
+      if(!t.thr||b.sep>t.thr)return;
+      // describe the pass at a moment when the Moon is reasonably high, if there is one
+      if(b.hi&&b.hi.sep<=t.thr)Object.assign(b,{sep:b.hi.sep,jd:b.hi.jd,alt:b.hi.alt,az:b.hi.az});
+      const tight=b.sep<1.5;
+      out.push({jd:b.jd,night,icon:'☾',color:t.color||'#d4c9a8',weight:t.planet?(['Venus','Jupiter','Saturn','Mars'].includes(t.name)?5:3):3,cat:'moon',
+        title:`Moon ${tight?'close to':'near'} ${t.name} — ${b.sep.toFixed(1)}°`,
+        text:`${illum}%-lit Moon ${hlWhere(b.alt,b.az)} at ${fmtTime(b.jd)}. ${tight?(t.cluster?'Lovely in binoculars.':'Close enough to share a binocular field.'):'An easy naked-eye pairing.'}${b.alt<12?` Low — you'll need a clear view toward the ${hlCompass(b.az)}.`:''}`,
+        when:fmtTime(b.jd)+hlLateTag(b.jd,jdMid)});
+    });
+  });
+
+  // 4 ── Planet–planet conjunctions ≤ 3° that are visible in a dark sky ─────
+  computeConjunctions(planets,startJD,HL_DAYS).forEach(c=>{
+    if(c.sep>3)return;
+    const ga=jd=>planetPos(jd,c.objA.name),gb=jd=>planetPos(jd,c.objB.name);
+    // view on the night of closest approach; if both aren't up together in the dark then, try the nights either side
+    let bestV=null;
+    for(const off of [0,-1,1]){
+      const jdMid=jdMidOfISO(hlNightOf(c.jd))+off,fn=hlFullNight(jdMid);
+      for(let jd=fn.d;jd<=fn.e;jd+=1/144){const A=ga(jd),B=gb(jd),aa=altAz(A.ra,A.dec,ST.lat,ST.lon,jd),ab=altAz(B.ra,B.dec,ST.lat,ST.lon,jd);
+        const lo=Math.min(aa.alt,ab.alt);if(lo>=8&&(!bestV||lo>bestV.lo))bestV={lo,jd,az:aa.az,sep:angSep(A,B)};}
+      if(bestV)break;
+    }
+    if(!bestV)return;
+    const night=hlNightOf(bestV.jd),evening=bestV.jd<jdLocalNoon(jdMidOfISO(night),ST.lon)+0.5;
+    out.push({jd:bestV.jd,night,icon:'⚭',color:'#ffd700',weight:c.sep<1?8:6,cat:'conj',
+      title:`${c.objA.name} and ${c.objB.name} — ${bestV.sep.toFixed(1)}° apart`,
+      text:`Closest on ${hlLocalDay(c.jd)} (${c.sep.toFixed(1)}°). Best seen ${evening?'in the evening':'before dawn'} around ${fmtTime(bestV.jd)}, ${hlWhere(bestV.lo,bestV.az)}. ${c.sep<1?'Both fit in one low-power telescope field.':'A striking naked-eye and binocular pair.'}`,
+      when:fmtTime(bestV.jd)+hlLateTag(bestV.jd,jdMidOfISO(night))});
+  });
+
+  // 5 ── Oppositions and greatest elongations ───────────────────────────────
+  planets.forEach(o=>{
+    computePlanetEvents(o,startJD,HL_DAYS).forEach(ev=>{
+      if(ev.type==='opposition'){
+        const night=hlNightOf(ev.jd),jdMid=jdMidOfISO(night),fn=hlFullNight(jdMid);let tr=null;
+        for(let jd=fn.d;jd<=fn.e;jd+=1/96){const p=planetPos(jd,o.name),a=altAz(p.ra,p.dec,ST.lat,ST.lon,jd);if(!tr||a.alt>tr.alt)tr={jd,alt:a.alt,az:a.az};}
+        const extra={Mars:'Its disk is at its largest for this apparition — the best time for surface detail.',Jupiter:'Its disk and moons are at their biggest and brightest.',
+          Saturn:`Rings tilted ${Math.abs(saturnRingTilt(ev.jd)).toFixed(1)}°. Saturn brightens noticeably right at opposition.`,
+          Uranus:'At magnitude 5.7 it\'s just visible to the eye from a dark site; a telescope shows a small blue-green disk.',
+          Neptune:'At magnitude 7.8 it needs binoculars or a telescope; look for a tiny blue disk.'}[o.name]||'';
+        out.push({jd:ev.jd,night,icon:'⊕',color:'#ff9944',weight:['Mars','Jupiter','Saturn'].includes(o.name)?9:5,cat:'planet',
+          title:`${o.name} at opposition`,
+          text:`Opposite the Sun: rises at sunset, up all night, and closest to Earth. Highest around ${fmtTime(tr.jd)} (${hlWhere(tr.alt,tr.az)}). ${extra}`,
+          when:'all night'});
+      }
+      if(ev.type==='elongation'){
+        // altitude 40 min after sunset (evening) or 40 min before sunrise (morning) on that date
+        const east=/E Elong/.test(ev.label),day=localISODate(dateOfJD(ev.jd)),jdMid=jdMidOfISO(day),jN=jdLocalNoon(jdMid,ST.lon);
+        const t=east?(sunEvents(jdMid,ST.lat,ST.lon).sunset||jN+0.25)+40/1440     // this evening's sunset
+                    :(sunEvents(jdMid-1,ST.lat,ST.lon).sunrise||jN-0.25)-40/1440; // this morning's sunrise (night before)
+        const p=planetPos(t,o.name),a=altAz(p.ra,p.dec,ST.lat,ST.lon,t);
+        const quality=a.alt>=15?'a good apparition':a.alt>=8?'a fair apparition':'a poor apparition from your latitude';
+        out.push({jd:ev.jd,night:east?day:hlNightOf(t),icon:east?'◁':'▷',color:'#ffdd66',weight:o.name==='Mercury'?6:7,cat:'planet',
+          title:`${o.name} at greatest ${east?'evening':'morning'} elongation — ${ev.angle.toFixed(0)}° from the Sun`,
+          text:`${east?'40 minutes after sunset':'40 minutes before sunrise'} it's ${hlWhere(a.alt,a.az)} — ${quality}. ${o.name==='Mercury'?'Mercury is only easy to catch for about a week either side.':'Venus shows a half-lit phase in a telescope around now.'}`,
+          when:fmtTime(t),viewJD:t,dim:a.alt<5});
+      }
+    });
+  });
+
+  // 6 ── Jupiter: double shadows and the best shadow-transit nights ─────────
+  const jupNights=[];
+  nights.forEach(n=>{
+    const evs=jupiterEventsNight(n.jdMid);if(!evs.length)return;
+    const w=nightWindow(n.jdMid),inW=e=>e.start>=w.d&&e.end<=w.e;
+    const sh=evs.filter(e=>e.kind==='shadow');
+    for(let a=0;a<sh.length;a++)for(let b=a+1;b<sh.length;b++){
+      const s=Math.max(sh[a].start,sh[b].start),e=Math.min(sh[a].end,sh[b].end);
+      if(e-s>5/1440&&e>w.d&&s<w.e)out.push({jd:s,night:n.iso,icon:'●●',color:'#c8d2ff',weight:10,cat:'jupiter',
+        title:`Double shadow transit on Jupiter`,text:`${sh[a].what.replace(' shadow','')} and ${sh[b].what.replace(' shadow','')} both cast shadows on Jupiter from ${fmtTime(s)} to ${fmtTime(e)} — a rare sight in any telescope.`,
+        when:`${fmtTime(s)}–${fmtTime(e)}`,jup:s});
+    }
+    let score=0;evs.forEach(e=>{const full=inW(e);score+=(e.kind==='shadow'?3:1)*(full?1:0.4)*(e.alt>25?1:0.6);});
+    const fullShadow=sh.find(inW);
+    if(fullShadow)jupNights.push({n,score,evs,sh:fullShadow,w});
+  });
+  jupNights.sort((a,b)=>b.score-a.score).slice(0,3).forEach(j=>{
+    const grs=j.evs.find(e=>e.kind==='grs'),tr=j.evs.find(e=>e.kind==='transit'&&e.what.startsWith(j.sh.what.split(' ')[0]));
+    out.push({jd:j.sh.start,night:j.n.iso,icon:'♃',color:'#c8a878',weight:4,cat:'jupiter',
+      title:`Good Jupiter night: ${j.sh.what} transit${grs?' + Great Red Spot':''}`,
+      text:`${j.sh.what.replace(' shadow','')}'s shadow crosses Jupiter ${fmtTime(j.sh.start)}–${fmtTime(j.sh.end)}${tr?`; the moon itself crosses ${fmtTime(Math.max(tr.start,j.w.d))}–${fmtTime(tr.end)}`:''}${grs?`; the Red Spot is on the facing side ${fmtTime(Math.max(grs.start,j.w.d))}–${fmtTime(Math.min(grs.end,j.w.e))}`:''}. Jupiter about ${Math.round(j.sh.alt)}° up.`,
+      when:`${fmtTime(j.sh.start)}–${fmtTime(j.sh.end)}`,jup:j.sh.mid});
+  });
+
+  // 7 ── Meteor showers peaking in the window ───────────────────────────────
+  HL_SHOWERS.forEach(sh=>{
+    const T=(startJD-J2000)/36525,target=mod360(sh.lam+1.3969713*T);
+    let jd=startJD+mod360(target-sunPos(startJD).lon)/0.98565;
+    for(let k=0;k<3;k++)jd+=(mod360(target-sunPos(jd).lon+180)-180)/0.98565;
+    if(!inRange(jd))return;
+    // the night of the peak: if the peak is in daylight, use the night before it
+    const night=hlNightOf(jd),jdMid=jdMidOfISO(night),sv=sunEvents(jdMid,ST.lat,ST.lon),jN=jdLocalNoon(jdMid,ST.lon);
+    const fn={d:sv.nautDusk||sv.dusk||jN+7.5/24,e:sv.nautDawn||sv.dawn||jN+16.5/24};   // meteors need real darkness
+    const rad=precessFromJ2000(sh.ra,sh.dec,jd);
+    let bestT=null;const LM0=HL_NELM[EQUIP.bortle];
+    for(let t=fn.d;t<=fn.e;t+=1/72){
+      const ra=altAz(rad.ra,rad.dec,ST.lat,ST.lon,t).alt;if(ra<10)continue;
+      const m=moonPosTopo(t),ma=altAz(m.ra,m.dec,ST.lat,ST.lon,t).alt,il=moonPhase(t).illum/100;
+      const lm=LM0-(ma>0?1.6*il*Math.min(1,0.3+ma/40):0);
+      const hr=sh.zhr*Math.pow(2.5,lm-6.5)*Math.sin(ra*DEG);
+      if(!bestT||hr>bestT.hr)bestT={t,hr,ra,ma,il};
+    }
+    if(!bestT)return;
+    const illum=moonPhase(bestT.t).illum,mUp=bestT.ma>0;
+    const hrTxt=bestT.hr>=1?`about ${Math.round(bestT.hr)} per hour`:'fewer than one per hour';
+    out.push({jd,night,byNight:true,icon:'☄',color:'#9ad0ff',weight:sh.zhr>=50?8:sh.zhr>=15?6:3,cat:'meteor',
+      title:`${sh.name} meteor shower peak`,
+      text:`Best around ${fmtTime(bestT.t)}, radiant ${Math.round(bestT.ra)}° up. From your Bortle ${EQUIP.bortle} sky expect ${hrTxt} (up to ${sh.zhr}/hr under perfect dark skies). Moon ${illum}% lit${mUp?' and up — it will wash out fainter meteors':illum>5?', but below the horizon then':''}. ${sh.note.charAt(0).toUpperCase()+sh.note.slice(1)}. No telescope needed — lie back and take in the whole sky.`,
+      when:`${hlDay(night,false)}–${hlDay(hlAddDays(night,1),false)} night`+hlLateTag(bestT.t,jdMid)});
+  });
+
+  // 8 ── Deep sky coming into / leaving the evening sky (within reach) ──────
+  const peakDark=(d,jdMid)=>{const w=darkWindow(jdMid);let mx=-90;for(let t=w.d;t<=w.e;t+=1/48){const p=dsoRaDec(d,t),a=altAz(p.ra,p.dec,ST.lat,ST.lon,t).alt;if(a>mx)mx=a;}return mx;};
+  const firstN=nights[0].jdMid,lastN=nights[nights.length-1].jdMid,coming=[],leaving=[];
+  DSO_CATALOG.forEach(d=>{
+    if(dsoReach(d).lvl<2)return;
+    const a0=peakDark(d,firstN),a1=peakDark(d,lastN);
+    if(a0<30&&a1>=30)coming.push(d);
+    if(a0>=30&&a1<30)leaving.push(d);
+  });
+  const dsoList=list=>list.map(d=>`<span class="tn-more" onclick="event.stopPropagation();showDSODetail('${d.id}')">${d.name}${d.common?' '+d.common:''}</span>`).join(' ');
+  if(coming.length)out.push({seasonal:true,icon:'↗',color:'#8db4e0',cat:'season',title:'Coming into the evening sky',
+    text:`Climbing above 30° in the dark hours before your cutoff over the next month: ${dsoList(coming)}`});
+  if(leaving.length)out.push({seasonal:true,icon:'↘',color:'#e8a050',cat:'season',title:'Last good month in the evening',
+    text:`Dropping below 30° in the dark hours before your cutoff: ${dsoList(leaving)}`});
+
+  const res=out.filter(e=>e.seasonal||e.daytime||e.night>=isoStart).sort((a,b)=>(a.seasonal?1:0)-(b.seasonal?1:0)||(a.jd-b.jd));
+  if(_hlCache.size>20)_hlCache.clear();_hlCache.set(key,res);
+  return res;
+}
+
+// ── rendering ──
+function renderHighlights(isoStart){
+  const el=document.getElementById('tnHighlights');if(!el)return;
+  let items;
+  try{items=computeHighlights(isoStart);}catch(err){el.innerHTML=`<div class="tn-muted">Couldn't compute highlights (${err.message}).</div>`;return;}
+  if(TN.date!==isoStart)return;   // user moved on while computing
+  const dated=items.filter(i=>!i.seasonal),seasonal=items.filter(i=>i.seasonal);
+  const row=i=>{
+    const click=i.seasonal?'':`onclick="hlGo('${i.night}'${i.jup!=null?','+i.jup:''})"`;
+    const vj=i.viewJD!=null?i.viewJD:i.jd;
+    const day=i.seasonal?'This month':i.range?`${hlDay(i.range[0],false)}<br>–${hlDay(i.range[1],false)}`
+      :i.byNight?`${hlDay(i.night)}<br><span class="tn-muted">night</span>`:hlLocalDay(vj);
+    return `<div class="hl-row${i.dim?' hl-dim':''}${i.weight>=8?' hl-major':''}" ${click} title="${i.seasonal?'':'Open this night'}">
+      <div class="hl-date">${day}</div>
+      <div class="hl-icon" style="color:${i.color}">${i.icon}</div>
+      <div class="hl-body"><div class="hl-title">${i.title}${i.when?`<span class="hl-when">${i.when}</span>`:''}</div><div class="hl-text">${i.text}</div></div></div>`;
+  };
+  el.innerHTML=`<div class="tn-card-title">Upcoming highlights · next ${HL_DAYS} nights</div>
+    ${dated.length?dated.map(row).join(''):'<div class="tn-muted" style="padding:6px 0">Nothing special in the next month beyond the regular sky.</div>'}
+    ${seasonal.map(row).join('')}
+    <div class="tn-foot">Everything listed is visible from ${ST.zip?'ZIP '+ST.zip:'your location'} · times are local · click a dated item to open that night</div>`;
+  // Moonlit tonight? point to the next dark window in the verdict
+  const vsub=document.querySelector('.tn-vsub'),cls=document.querySelector('.tn-verdict')?.className||'';
+  if(vsub&&/tn-(moon|fair|poor)/.test(cls)&&!vsub.querySelector('.hl-next')){
+    const dw=dated.find(i=>i.cat==='dark'&&i.night>isoStart);
+    if(dw)vsub.insertAdjacentHTML('beforeend',` <span class="hl-next">Next dark-sky window starts <a onclick="hlGo('${dw.night}')">${hlDay(dw.night)}</a>.</span>`);
+  }
+}
+function hlGo(iso,jupJD){
+  TN.date=iso;renderTonight();window.scrollTo({top:0,behavior:'smooth'});
+  if(jupJD!=null)setTimeout(()=>TN_jump(jupJD),50);
+}
+
+
 applySettings();
 
 function openReadme() {
@@ -3764,6 +4102,7 @@ document.addEventListener('keydown', e => {
 <li><strong>Moon &amp; planets</strong> — when each is above 10° in your window and its best time; Saturn's ring tilt; Jupiter's event count</li>
 <li><strong>Jupiter's moons tonight</strong> — shadow transits, moon transits and Great Red Spot crossings while Jupiter is up, plus a live diagram (tap an event to show it)</li>
 <li><strong>Best deep-sky targets</strong> — ranked by altitude in full darkness, tonight's moonlight and the visibility guide for your setup, each with the note for your sky</li>
+<li><strong>Upcoming highlights</strong> (v16) — the next 30 nights from the night shown: eclipses, full Moons (named, with supermoons), dark-sky windows with their weekend nights, close Moon passes by planets, bright stars and the Pleiades/Beehive, lunar occultations, planet–planet conjunctions under 3°, oppositions, greatest elongations, double shadow transits and the best Jupiter shadow nights, meteor-shower peaks with the rate to expect from your sky, and deep-sky objects coming into or leaving the evening sky. Only events visible from your location are listed; ones after your Late Night cutoff are tagged. Click a dated item to open that night. On a moonlit night the verdict also names the next dark-sky window.</li>
 </ul>
 <h3>Year View</h3>
 <p>An annual Gantt-style timeline showing every tracked object's visibility across the full calendar year. Each row is one object; bars represent nights when the object rises above your effective horizon during your observing window.</p>
@@ -3992,8 +4331,9 @@ index.html
     ├── JUPITER TAB  Galilean moon timeline, nightWindow(), GRS model, scoring
     ├── SATURN TAB   Ring tilt context, shadow geometry, Titan note
     ├── DEEP SKY TAB DSO_CATALOG (27 entries), dsoSVG(), Bortle tooltips, moonlight row
-    └── v15 FEATURES  LS storage, EQUIP + dsoReach(), darkWindow(), nightMoonlight(),
-                     renderTonight(), jupiterDiagram(), red mode, touch support
+    ├── v15 FEATURES  LS storage, EQUIP + dsoReach(), darkWindow(), nightMoonlight(),
+    │                renderTonight(), jupiterDiagram(), red mode, touch support
+    └── v16 HIGHLIGHTS computeHighlights(), renderHighlights(), HL_SHOWERS, HL_STARS
 </code></pre>
 <p><strong>Key constants:</strong></p>
 <pre><code>
@@ -4019,6 +4359,13 @@ const RAD = 180 / Math.PI;      // radians → degrees
 </ul>
 <hr>
 <h2>Changelog</h2>
+<h3>v16 — upcoming highlights</h3>
+<ul>
+<li><strong>Upcoming highlights</strong> card on the Tonight tab (next 30 nights, computed for your location; see Tabs → Tonight)</li>
+<li><strong>Moon phase times</strong> now use ecliptic longitude (the definition); the previous right-ascension method was off by 1–2 hours. Checked against published November 2026 times to within 2–4 minutes</li>
+<li><strong>Greatest elongations</strong> refined to the hour (were up to a day off)</li>
+<li>"Also well placed" names wrap on phones</li>
+</ul>
 <h3>v15 — observing features</h3>
 <ul>
 <li><strong>Tonight tab</strong> (new landing page): verdict, darkness and moonlight strip, planets, Jupiter events with a diagram, and the best deep-sky targets for your setup</li>
@@ -4078,6 +4425,7 @@ const RAD = 180 / Math.PI;      // radians → degrees
 <p>Validation: JPL Horizons; astropy built-in ephemeris; Universidad de Granada Jupiter tables (Jan 2026).</p>
 <p>GRS longitude: <em>Sky & Telescope</em> GRS transit calculator (91° on 2026 Jun 1, +1.75°/month), based on JUPOS measurements.</p>
 <p>Filter recommendations: Knisely, D. <em>Nebula Filter Observations</em>.</p>
+<p>Meteor showers: International Meteor Organization, <em>2026 Meteor Shower Calendar</em>, Table 5 (peak solar longitudes and ZHRs).</p>
 <p>DSO descriptions and Bortle context adapted from standard amateur astronomy references.</p>
   </div>
 </div>
